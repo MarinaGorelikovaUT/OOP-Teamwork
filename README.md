@@ -1,8 +1,8 @@
 # Command-line pizzeria haldussüsteem
 
-Marina Gorelikova (github: MarinaGorelikovaUT)
-Jessica Brjuhhov (github: jackdaw5)
-Denis Artemjev (github: DenisArtemjevUT)
+- Marina Gorelikova (github: MarinaGorelikovaUT)
+- Jessica Brjuhhov (github: jackdaw5)
+- Denis Artemjev (github: DenisArtemjevUT)
 
 ## Projekti lühikirjeldus
 
