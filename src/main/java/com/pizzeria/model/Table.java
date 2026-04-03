@@ -1,7 +1,8 @@
 package com.pizzeria.model;
+import java.io.Serializable; 
 
-public class Table {
-
+public class Table implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int number;
     private int capacity;
 

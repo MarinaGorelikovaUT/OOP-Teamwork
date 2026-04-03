@@ -1,9 +1,10 @@
 package com.pizzeria.model;
-import com.pizzeria.model.Table;
+
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class Reservation {
-
+public class Reservation implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Table table;
     private String customer;

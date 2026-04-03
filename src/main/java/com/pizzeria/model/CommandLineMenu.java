@@ -1,146 +1,69 @@
 package com.pizzeria.model;
 
-import java.time.LocalDateTime;
+import com.pizzeria.service.MenuService;
+import com.pizzeria.service.OrderService;
+import com.pizzeria.model.menu.*;
 import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class CommandLineMenu {
     private Scanner scanner;
-    private Manager manager;
-    private Waiter waiter;
-    private Cook cook;
-    private Table[] tables;
-    private ReservationService reservationService;
-    private Role role;
+    private Map<Role, MenuHandler> handlers;
+    private Role currentRole;
+    private boolean running;
 
-    public CommandLineMenu(Role role) {
+    public CommandLineMenu(Role role, Table[] tables, ReservationService reservationService, OrderService orderService) {
         this.scanner = new Scanner(System.in);
-        this.manager = new Manager("Juri");
-        this.waiter = new Waiter("Juuri2", null);
-        this.cook = new Cook("Mari");
-        this.reservationService = new ReservationService();
-        this.tables = new Table[6];
-        this.role = role;
-
-        // Initsialiseerime tabelid
-        for (int i = 0; i < tables.length; i++) {
-            tables[i] = new Table(6, i + 1);
-        }
-    }
-
-    public void displayMainMenu() {
-        System.out.println("\nPIZZERIA TELLIMUSSUSTEEM\n");
-
-        if (role == Role.MANAGER) {
-            System.out.println("1. Vaata laudade nimikirja");
-            System.out.println("2. Broneeri laud");
-        } else if (role == Role.WAITER) {
-            System.out.println("4. Võta tellimus");
-        } else if (role == Role.COOK) {
-            System.out.println("5. Vaata aktiivseid tellimusi");
-        }
-
-        System.out.println("0. Välju");
-        System.out.print("Vali tegevus: ");
-    }
-
-    public void processInput(int choice) {
-        switch (choice) {
-            case 1:
-                if (role == Role.MANAGER) manager.viewAllTables(tables, reservationService);
-                else System.out.println("Pole lubatud!");
-                break;
-            case 2:
-                if (role == Role.MANAGER) handleReservation();
-                else System.out.println("Pole lubatud!");
-                break;
-            case 4:
-                if (role == Role.WAITER) handleOrder();
-                else System.out.println("Pole lubatud!");
-                break;
-            case 5:
-                if (role == Role.COOK) cook.viewOrders(tables);
-                else System.out.println("Pole lubatud!");
-                break;
-            case 0:
-                System.out.println("Väljun...");
-                break;
-            default:
-                System.out.println("Vale valik!");
-        }
-    }
-
-    private void handleReservation() {
-        System.out.println("\nLauda broneerimine\n");
-
-        for (Table table : tables) {
-            System.out.println(
-                "Laud " + table.getNumber() +
-                " | Mahutavus: " + table.getCapibility() +
-                " | Staatus: " + table.getStatus()
-            );
-        }
-
-        System.out.print("Vali laud: ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
-
-        if (num < 1 || num > tables.length) {
-            System.out.println("Vale number!");
-            return;
-        }
-
-        Table table = tables[num - 1];
-
-        System.out.print("Nimi: ");
-        String name = scanner.nextLine();
-
-        System.out.print("Inimeste arv: ");
-        int count = scanner.nextInt();
-        scanner.nextLine();
-
-        // Broneering ajaks paneme praeguse aja (edaspidi saab kuupäeva lisada)
-        boolean ok = reservationService.addReservation(
-                table,
-                name,
-                count,
-                LocalDateTime.now()
-        );
-
-        if (ok) {
-            System.out.println("✅ Broneering tehtud!");
-        } else {
-            System.out.println("❌ Laud juba broneeritud!");
-        }
-    }
-
-    private void handleOrder() {
-        System.out.print("Mis lauale tellimus: ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
-
-        if (num < 1 || num > tables.length) {
-            System.out.println("Vale number!");
-            return;
-        }
-
-        waiter.takeOrder(tables[num - 1]);
+        this.currentRole = role;
+        this.running = true;
+        
+        MenuService menuService = new MenuService();
+        
+        this.handlers = new HashMap<>();
+        handlers.put(Role.MANAGER, new ManagerMenuHandler(tables, reservationService, menuService));
+        handlers.put(Role.WAITER, new WaiterMenuHandler(tables, reservationService, menuService, orderService));
+        handlers.put(Role.COOK, new CookMenuHandler(orderService));
+        handlers.put(Role.GUEST, new GuestMenuHandler(tables, reservationService));
     }
 
     public void run() {
-        boolean running = true;
-
+        System.out.println("Programm käivitatud!\n");
+        System.out.println("Salvestatud broneeringuid: " + getReservationCount() + "\n");
+        
+        MenuHandler currentHandler = handlers.get(currentRole);
+        
         while (running) {
-            displayMainMenu();
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
-            if (choice == 0) {
-                running = false;
+            System.out.println("  PIZZERIA TELLIMUSSUSTEEM  \n");
+            System.out.println("Roll: " + currentHandler.getRoleName());
+            System.out.println("--------------------------------");
+            
+            currentHandler.displayMenu();
+            System.out.println("0. Logi välja");
+            System.out.print("\nVali tegevus: ");
+            
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                
+                if (choice == 0) {
+                    running = false;
+                    System.out.println("\nLogitakse välja...");
+                } else {
+                    currentHandler.handleInput(choice, scanner);
+                }
             } else {
-                processInput(choice);
+                System.out.println("Palun sisesta number!\n");
+                scanner.nextLine();
             }
         }
-
-        scanner.close();
+    }
+    
+    private int getReservationCount() {
+        if (handlers.containsKey(Role.MANAGER)) {
+            ManagerMenuHandler m = (ManagerMenuHandler) handlers.get(Role.MANAGER);
+        }
+        return 0;
     }
 }
