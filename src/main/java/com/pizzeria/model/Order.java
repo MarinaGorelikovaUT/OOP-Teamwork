@@ -1,6 +1,7 @@
 package com.pizzeria.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,5 +62,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Tellimus #" + getOrderNumber() + " | Laud " + tableNumber + " | " + status + " | " + createdTime;    }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return "Tellimus #" + getOrderNumber() + " | Laud " + tableNumber + " | " + status + " | " + createdTime.format(formatter);}
 }
