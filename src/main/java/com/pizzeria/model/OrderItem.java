@@ -7,14 +7,26 @@ public class OrderItem {
     // Menüü element, mida telliti ja kogus
     private MenuItem menuItem;
     private int quantity;
-
+    // Näitab, kas toode on uus lisand (lisatellimus)
+    private boolean isNew;
     public OrderItem(MenuItem menuItem, int quantity) {
         this.menuItem = menuItem;
         this.quantity = quantity;
+        this.isNew = false;
     }
 
     public MenuItem getMenuItem() {
         return menuItem;
+    }
+
+    // Tagastab, kas toode on lisatellimus
+    public boolean isNew() {
+        return isNew;
+    }
+
+    // Määrab, kas toode on lisatellimus
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
     }
 
     public int getQuantity() {
@@ -28,6 +40,5 @@ public class OrderItem {
 
     @Override
     public String toString() {
-        return menuItem.getName() + " x" + quantity + " = " + getTotalPrice() + "€";
-    }
+        return menuItem.getName() + " x" + quantity + " = " + String.format("%.2f", getTotalPrice()) + "€";    }
 }

@@ -31,8 +31,7 @@ public class ManagerMenuHandler implements MenuHandler {
     public void handleInput(int choice, Scanner scanner) {
         switch (choice) {
             case 1:
-                manager.viewAllTables(tables, reservationService);
-                waitForEnter(scanner);
+                manager.viewAllTables(java.util.Arrays.asList(tables), reservationService);                waitForEnter(scanner);
                 break;
             case 2:
                 handleReservation(scanner);
@@ -79,6 +78,12 @@ public class ManagerMenuHandler implements MenuHandler {
         System.out.print("Inimeste arv: ");
         int count = scanner.nextInt();
         scanner.nextLine();
+
+        if (count > table.getCapibility()) {
+            System.out.println("Liiga palju külalisi! Laua mahutavus on " + table.getCapibility() + "\n");
+            waitForEnter(scanner);
+            return;
+        }
         
         boolean ok = reservationService.addReservation(table, name, count, LocalDateTime.now());
         

@@ -11,7 +11,7 @@ public class WaiterMenuHandler implements MenuHandler {
     private ReservationService reservationService;
     private MenuService menuService;
     private OrderService orderService;
-    
+
     public WaiterMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService, OrderService orderService) {
         this.waiter = new Waiter("Juuri2", reservationService);
         this.tables = tables;
@@ -19,7 +19,7 @@ public class WaiterMenuHandler implements MenuHandler {
         this.menuService = menuService;
         this.orderService = orderService;
     }
-    
+
     @Override
     public void displayMenu() {
         System.out.println("1. Võta tellimus");
@@ -27,7 +27,7 @@ public class WaiterMenuHandler implements MenuHandler {
         System.out.println("3. Vaata menüüd");
         System.out.println("4. Teeninda lauda");
     }
-    
+
     @Override
     public void handleInput(int choice, Scanner scanner) {
         switch (choice) {
@@ -49,10 +49,10 @@ public class WaiterMenuHandler implements MenuHandler {
                 System.out.println("Vale valik!\n");
         }
     }
-    
+
     private void handleOrder(Scanner scanner) {
         System.out.println("   TELLIMUSE VÕTMINE   \n");
-        
+
         System.out.println("Kõik lauad:");
         for (Table table : tables) {
             String info = "Laud " + table.getNumber() + " Staatus: " + table.getStatus();
@@ -66,30 +66,30 @@ public class WaiterMenuHandler implements MenuHandler {
             }
             System.out.println(info);
         }
-        
+
         System.out.print("\nMis lauale tellimus (0 tagasi): ");
         int num = scanner.nextInt();
         scanner.nextLine();
-        
+
         if (num == 0) return;
         if (num < 1 || num > tables.length) {
             System.out.println("Vale number!\n");
             return;
         }
-        
+
         Table table = tables[num - 1];
-        
+
         Order newOrder = orderService.createOrder(table.getNumber());
         System.out.println("Uus tellimus lauale " + table.getNumber() + "\n");
-        
+
         boolean ordering = true;
         while (ordering) {
             menuService.printMenu();
-            
+
             System.out.print("\nSisesta toote number (0 lõpetamiseks): ");
             int itemNum = scanner.nextInt();
             scanner.nextLine();
-            
+
             if (itemNum == 0) {
                 ordering = false;
                 System.out.println("Tellimus lõpetatud!\n");
@@ -99,7 +99,7 @@ public class WaiterMenuHandler implements MenuHandler {
                     System.out.print("Mitu: ");
                     int quantity = scanner.nextInt();
                     scanner.nextLine();
-                    
+
                     orderService.addItem(newOrder, selectedItem, quantity);
                     System.out.println("Lisatud: " + selectedItem.getName() + " x" + quantity + "\n");
                 } else {
@@ -107,11 +107,11 @@ public class WaiterMenuHandler implements MenuHandler {
                 }
             }
         }
-        
+
         System.out.println("  TELLIMUSE KOKKUVÕTE  \n");
         System.out.println("Laud: " + table.getNumber());
         System.out.println("Tooted:");
-        
+
         double total = 0;
         for (OrderItem item : newOrder.getItems()) {
             double itemTotal = item.getMenuItem().getPrice() * item.getQuantity();
@@ -119,19 +119,19 @@ public class WaiterMenuHandler implements MenuHandler {
             total += itemTotal;
         }
         System.out.println("Kogusumma: " + total + "euro\n");
-        
+
         waiter.takeOrder(table, orderService);
-        
+
         System.out.println("Tellimus saadetud kokale!\n");
         waitForEnter(scanner);
     }
-    
+
     private void handleUnbroneeri(Scanner scanner) {
         System.out.println("  BRONEERINGU TÜHISTAMINE  ");
-        
+
         System.out.println("Broneeritud lauad:");
         boolean hasReservations = false;
-        
+
         for (Table table : tables) {
             if (table.getStatus() == Table.TableStatus.BRONEERITUD) {
                 String customerName = "";
@@ -145,34 +145,34 @@ public class WaiterMenuHandler implements MenuHandler {
                 hasReservations = true;
             }
         }
-        
+
         if (!hasReservations) {
             System.out.println("Ühtegi broneeringut pole!\n");
             waitForEnter(scanner);
             return;
         }
-        
+
         System.out.print("\nVali laua number (0 tagasi): ");
         int num = scanner.nextInt();
         scanner.nextLine();
-        
+
         if (num == 0) return;
         if (num < 1 || num > tables.length) {
             System.out.println("Vale number!\n");
             return;
         }
-        
+
         Table table = tables[num - 1];
         waiter.unbroneeriLaud(table);
-        
+
         waitForEnter(scanner);
     }
-    
+
     private void waitForEnter(Scanner scanner) {
         System.out.println("\nVajuta Enter jätkamiseks...");
         scanner.nextLine();
     }
-    
+
     @Override
     public String getRoleName() {
         return "WAITER";
@@ -243,6 +243,13 @@ public class WaiterMenuHandler implements MenuHandler {
         switch (action) {
             // Esitab arve, ootab kliendi makse kinnitust ja sulgeb tellimuse
             case 1:
+                // Kontrollib, et tellimus oleks valmis enne arve esitamist
+                if (tableOrder.getStatus() != Order.OrderStatus.READY &&
+                        tableOrder.getStatus() != Order.OrderStatus.DELIVERED) {
+                    System.out.println("Tellimus pole veel valmis! Praegune staatus: " + tableOrder.getStatus() + "\n");
+                    break;
+                }
+
                 System.out.println("Arve:");
                 System.out.println("Kogusumma: " + total + "€");
                 System.out.print("\nKlient maksis? (J/E): ");
@@ -256,7 +263,33 @@ public class WaiterMenuHandler implements MenuHandler {
 
             // Võimaldab kliendil juurde tellida
             case 2:
-                System.out.println("Dozakaz - tuleb lisada\n");
+                boolean addingMore = true;
+                while (addingMore) {
+                    System.out.print("\nSisesta toote number (0 lõpetamiseks): ");
+                    int itemNum = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (itemNum == 0) {
+                        addingMore = false;
+                        System.out.println("Lisamine lõpetatud!\n");
+                    } else {
+                        MenuItem selectedItem = menuService.getByIndex(itemNum - 1);
+                        if (selectedItem != null) {
+                            System.out.print("Mitu: ");
+                            int quantity = scanner.nextInt();
+                            scanner.nextLine();
+                            OrderItem addedItem = orderService.addItem(tableOrder, selectedItem, quantity);
+                            addedItem.setNew(true);
+                            System.out.println("Lisatud: " + selectedItem.getName() + " x" + quantity + "\n");
+                        } else {
+                            System.out.println("Vale number!\n");
+                        }
+                    }
+                }
+
+                // Saadab uuendatud tellimuse uuesti kokale
+                orderService.updateStatus(tableOrder, Order.OrderStatus.IN_PROGRESS);
+                System.out.println("Lisandused saadetud kokale!\n");
                 break;
             case 0:
                 return;

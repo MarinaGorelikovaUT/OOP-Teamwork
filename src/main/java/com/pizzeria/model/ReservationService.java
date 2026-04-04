@@ -23,7 +23,6 @@ public class ReservationService {
 
     // Lisab broneeringu, kui laud on vaba, mahutavus piisav ja aeg pole võetud
     public boolean addReservation(Table table, String customer, int guestCount, LocalDateTime time) {
-
         if (table.getStatus() == BRONEERITUD) {
             return false;
         }

@@ -28,8 +28,10 @@ public class OrderService {
     }
 
     // Lisab toote olemasolevale tellimusele
-    public void addItem(Order order, MenuItem menuItem, int quantity) {
-        order.addItem(new OrderItem(menuItem, quantity));
+    public OrderItem addItem(Order order, MenuItem menuItem, int quantity) {
+        OrderItem item = new OrderItem(menuItem, quantity);
+        order.addItem(item);
+        return item;
     }
 
     // Muudab tellimuse staatust

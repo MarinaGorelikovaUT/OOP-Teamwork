@@ -26,11 +26,13 @@ public class Cook extends User {
             System.out.println("Tooted:");
             
             double total = 0;
+            // Kuvab tooted, märgib lisatellimused [UUS] sildiga
             for (OrderItem item : order.getItems()) {
-                System.out.println("  - " + item.toString());
+                String prefix = item.isNew() ? "[UUS] " : "";
+                System.out.println("  - " + prefix + item.toString());
                 total += item.getTotalPrice();
             }
-            System.out.println("Kogusumma: " + total + "€");
+            System.out.printf("Kogusumma: %.2f€%n", total);
             System.out.println("----------------------------------------\n");
         }
     }
@@ -66,32 +68,5 @@ public class Cook extends User {
         if (!found) {
             System.out.println("Tellimust nr " + orderNumber + " ei leitud!\n");
         }
-    }
-    
-    // LISA SEE MEETOD - tellimuse kättetoimetamine
-    public void deliverOrder(OrderService orderService, int orderNumber) {
-        System.out.println("  TELLIMUSE KÄTTETOIMETAMINE   \n");
-        System.out.println("Otsin tellimust nr: " + orderNumber);
-        
-        List<Order> allOrders = orderService.getAllOrders();
-        
-        for (Order order : allOrders) {
-            if (order.getOrderNumber() == orderNumber) {
-                if (order.getStatus() != Order.OrderStatus.READY) {
-                    System.out.println("Tellimus nr " + orderNumber + " pole veel valmis! Praegune staatus: " + order.getStatus() + "\n");
-                    return;
-                }
-                
-                orderService.updateStatus(order, Order.OrderStatus.DELIVERED);
-                System.out.println("Tellimus nr " + orderNumber + " on kätte toimetatud!\n");
-                
-                // Vabasta laud
-                List<Table> tables = null; // See tuleb parameetrina anda
-                System.out.println("Laud " + order.getTableNumber() + " on nüüd vaba!\n");
-                return;
-            }
-        }
-        
-        System.out.println("Tellimust nr " + orderNumber + " ei leitud!\n");
     }
 }
