@@ -21,22 +21,17 @@ public class GuestMenuHandler implements MenuHandler {
 
     @Override
     public void displayMenu() {
-        System.out.println("1. Vaata laudu");
-        System.out.println("2. Broneeri laud");
-        System.out.println("3. Vaata menüüd");
+        System.out.println("1. Broneeri laud");
+        System.out.println("2. Vaata menüüd");
     }
 
     @Override
     public void handleInput(int choice, Scanner scanner) {
         switch (choice) {
             case 1:
-                viewAllTables();
-                waitForEnter(scanner);
-                break;
-            case 2:
                 handleGuestReservation(scanner);
                 break;
-            case 3:
+            case 2:
                 menuService.printMenuWithCategoryChoice(scanner);
                 break;
             default:
@@ -96,37 +91,27 @@ public class GuestMenuHandler implements MenuHandler {
         }
 
 
-        System.out.println("Broneeringu aeg:");
-        System.out.println("1. Broneeri kohe (praegune aeg)");
-        System.out.println("2. Vali aeg");
-        System.out.print("Vali: ");
-        int timeChoice = scanner.nextInt();
+// Broneeringu aja sisestamine
+        System.out.println("\nSisesta broneeringu aeg:");
+        System.out.print("Aasta: ");
+        int aasta = scanner.nextInt();
+        System.out.print("Kuu: ");
+        int kuu = scanner.nextInt();
+        System.out.print("Päev: ");
+        int paev = scanner.nextInt();
+        System.out.print("Tund (0-23): ");
+        int tunnid = scanner.nextInt();
+        System.out.print("Minut (0-59): ");
+        int minutid = scanner.nextInt();
         scanner.nextLine();
 
         LocalDateTime broneeringAeg;
-
-        if (timeChoice == 1) {
-            broneeringAeg = LocalDateTime.now();
-        } else {
-            System.out.print("Kuupäev (aasta): ");
-            int aasta = scanner.nextInt();
-            System.out.print("Kuupäev (kuu): ");
-            int kuu = scanner.nextInt();
-            System.out.print("Kuupäev (päev): ");
-            int paev = scanner.nextInt();
-            System.out.print("Kellaaeg (tunnid): ");
-            int tunnid = scanner.nextInt();
-            System.out.print("Kellaaeg (minutid): ");
-            int minutid = scanner.nextInt();
-            scanner.nextLine();
-
-            try {
-                broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
-            } catch (Exception e) {
-                System.out.println("Vale kuupäev või kellaaeg! Proovi uuesti.\n");
-                waitForEnter(scanner);
-                return;
-            }
+        try {
+            broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
+        } catch (Exception e) {
+            System.out.println("Vale kuupäev või kellaaeg! Proovi uuesti.\n");
+            waitForEnter(scanner);
+            return;
         }
 
         boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);

@@ -13,7 +13,7 @@ public class WaiterMenuHandler implements MenuHandler {
     private OrderService orderService;
     
     public WaiterMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService, OrderService orderService) {
-        this.waiter = new Waiter("Juuri2", reservationService);
+        this.waiter = new Waiter("Juuri", reservationService);
         this.tables = tables;
         this.reservationService = reservationService;
         this.menuService = menuService;
@@ -25,7 +25,7 @@ public class WaiterMenuHandler implements MenuHandler {
         System.out.println("1. Võta tellimus");
         System.out.println("2. Tühista broneering");
         System.out.println("3. Vaata menüüd");
-        System.out.println("4. Teeninda laud"); 
+        System.out.println("4. Teeninda lauda");
     }
     
     @Override
@@ -53,8 +53,7 @@ public class WaiterMenuHandler implements MenuHandler {
         // 1. Vali laud
         System.out.println("\n=== LAUAD ===");
         for (Table t : tables) {
-            String info = t.getNumber() + ". " + t.getStatus();
-            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
+            String info = "Laud " + t.getNumber() + " | Mahutavus: " + t.getCapibility() + " | Staatus: " + t.getStatus();            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
                 for (Reservation r : reservationService.getAllReservations()) {
                     if (r.getTable().getNumber() == t.getNumber()) {
                         info += " - " + r.getCustomer();
@@ -85,7 +84,7 @@ public class WaiterMenuHandler implements MenuHandler {
         boolean done = false;
         while (!done) {
             System.out.println("\n[0] Lõpeta  [M] Menüü  [V] Vaata  [X] Eemalda");
-            System.out.print("> ");
+            System.out.println("Toote lisamiseks sisesta number ja kogus tühikuga (nt: 1 2)");            System.out.print("> ");
             String cmd = scanner.nextLine().toUpperCase();
             
             switch (cmd) {
@@ -153,11 +152,11 @@ public class WaiterMenuHandler implements MenuHandler {
             for (int i = 0; i < order.getItems().size(); i++) {
                 OrderItem item = order.getItems().get(i);
                 double price = item.getMenuItem().getPrice() * item.getQuantity();
-                System.out.println((i+1) + ". " + item.getMenuItem().getName() + " x" + item.getQuantity() + " = " + price + "euro");
+                System.out.println((i+1) + ". " + item.getMenuItem().getName() + " x" + item.getQuantity() + " = " + String.format("%.2f", price) + "€");
                 total += price;
             }
             System.out.println("────────────────────────");
-            System.out.println("Kokku: " + total + "euro");
+            System.out.println("Kokku: " + String.format("%.2f", total) + "€");
         }
         System.out.println();
     }
@@ -274,7 +273,7 @@ public class WaiterMenuHandler implements MenuHandler {
             System.out.println("  - " + item.toString());
             total += item.getTotalPrice();
         }
-        System.out.println("Kogusumma: " + total + "€\n");
+        System.out.println("Kogusumma: " + String.format("%.2f", total) + "€\n");
 
         // Tegevuste menüü
         System.out.println("1. Esita arve");
@@ -294,12 +293,10 @@ public class WaiterMenuHandler implements MenuHandler {
                     break;
                 }
                 System.out.println("Arve:");
-                System.out.println("Kogusumma: " + total + "€");
-                System.out.print("\nKlient maksis? (J/E): ");
+                System.out.println("Kogusumma: " + String.format("%.2f", total) + "€");                System.out.print("\nKlient maksis? (J/E): ");
                 String confirm = scanner.nextLine();
                 if (confirm.equalsIgnoreCase("J")) {
-                    // orderService.closeOrder(tableOrder); - see meetod võib puududa
-                    orderService.updateStatus(tableOrder, Order.OrderStatus.DELIVERED);
+                    orderService.closeOrder(tableOrder);
                     table.setStatus(Table.TableStatus.VABA);
                     System.out.println("Tellimus suletud! Laud " + table.getNumber() + " on nüüd vaba.\n");
                 }
@@ -309,23 +306,42 @@ public class WaiterMenuHandler implements MenuHandler {
             case 2:
                 boolean addingMore = true;
                 while (addingMore) {
-                    System.out.print("\nSisesta toote number (0 lõpetamiseks): ");
-                    int itemNum = scanner.nextInt();
-                    scanner.nextLine();
-                    if (itemNum == 0) {
-                        addingMore = false;
-                        System.out.println("Lisamine lõpetatud!\n");
-                    } else {
-                        MenuItem selectedItem = menuService.getByIndex(itemNum - 1);
-                        if (selectedItem != null) {
-                            System.out.print("Mitu: ");
-                            int quantity = scanner.nextInt();
-                            scanner.nextLine();
-                            orderService.addItem(tableOrder, selectedItem, quantity);
-                            System.out.println("Lisatud: " + selectedItem.getName() + " x" + quantity + "\n");
-                        } else {
-                            System.out.println("Vale number!\n");
-                        }
+                    System.out.println("\n[0] Lõpeta  [M] Menüü  [V] Vaata");
+                    System.out.println("Toote lisamiseks sisesta number ja kogus tühikuga (nt: 1 2)");
+                    System.out.print("> ");
+                    String cmd = scanner.nextLine().toUpperCase();
+
+                    switch (cmd) {
+                        case "0":
+                            addingMore = false;
+                            System.out.println("Lisamine lõpetatud!\n");
+                            break;
+                        case "M":
+                            menuService.printMenuWithCategoryChoice(scanner);
+                            break;
+                        case "V":
+                            viewOrder(tableOrder);
+                            break;
+                        default:
+                            String[] parts = cmd.split(" ");
+                            if (parts.length == 2) {
+                                try {
+                                    int itemId = Integer.parseInt(parts[0]);
+                                    int qty = Integer.parseInt(parts[1]);
+                                    MenuItem selectedItem = menuService.getByIndex(itemId - 1);
+                                    if (selectedItem != null && qty > 0) {
+                                        OrderItem addedItem = orderService.addItem(tableOrder, selectedItem, qty);
+                                        addedItem.setNew(true);
+                                        System.out.println("+ " + selectedItem.getName() + " x" + qty);
+                                    } else {
+                                        System.out.println("Vale toote number!");
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Kasuta: number kogus (nt: 1 2)");
+                                }
+                            } else {
+                                System.out.println("Kasuta: 0, M, V või 'number kogus'");
+                            }
                     }
                 }
                 orderService.updateStatus(tableOrder, Order.OrderStatus.IN_PROGRESS);

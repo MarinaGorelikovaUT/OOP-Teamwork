@@ -3,6 +3,7 @@ package com.pizzeria.model.menu;
 import com.pizzeria.model.*;
 import com.pizzeria.service.MenuService;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class ManagerMenuHandler implements MenuHandler {
@@ -50,7 +51,7 @@ public class ManagerMenuHandler implements MenuHandler {
     private void handleReservation(Scanner scanner) {
         System.out.println("  LAUDA BRONEERIMINE  \n");
 
-        // 1. Выбор стола — повторяем пока не выберут свободный
+        // Laua valimine - kordame kuni valitakse vaba laud
         Table table = null;
         while (table == null) {
             for (Table t : tables) {
@@ -76,11 +77,11 @@ public class ManagerMenuHandler implements MenuHandler {
             table = selected;
         }
 
-        // 2. Имя
+        // Nimi
         System.out.print("Nimi: ");
         String name = scanner.nextLine();
 
-        // 3. Количество гостей — повторяем пока не введут правильное число
+        // Külaliste arv - kordame kuni sisestatakse õige arv
         int count = 0;
         while (count < 1 || count > table.getCapibility()) {
             System.out.print("Inimeste arv (max " + table.getCapibility() + "): ");
@@ -91,7 +92,7 @@ public class ManagerMenuHandler implements MenuHandler {
             }
         }
 
-        // 4. Опция — сейчас или выбрать время
+        // Broneeringu aja valik
         System.out.println("Broneeringu aeg:");
         System.out.println("1. Broneeri kohe (praegune aeg)");
         System.out.println("2. Vali aeg");
@@ -142,8 +143,8 @@ public class ManagerMenuHandler implements MenuHandler {
         boolean found = false;
         for (Reservation r : reservationService.getAllReservations()) {
             Table table = r.getTable();
-            System.out.println("Laud " + table.getNumber() + " | Broneerija: " + r.getCustomer() + " | Külalisi: " + r.getCustomer_count() + " | Aeg: " + r.getTime());
-            found = true;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+            System.out.println("Laud " + table.getNumber() + " | Broneerija: " + r.getCustomer() + " | Külalisi: " + r.getCustomer_count() + " | Aeg: " + r.getTime().format(formatter));            found = true;
         }
 
         if (!found) {
