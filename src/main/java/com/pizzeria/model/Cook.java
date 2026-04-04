@@ -10,9 +10,8 @@ public class Cook extends User {
     }   
     public void viewActiveOrders(OrderService orderService) {
         System.out.println("   AKTIIVSED TELLIMUSED  \n");
-        List<Order> allOrders = orderService.getAllOrders();
         List<Order> activeOrders = orderService.getActiveOrders();
-        
+
         if (activeOrders.isEmpty()) {
             System.out.println("Hetkel pole ühtegi aktiivset tellimust.\n");
             return;
