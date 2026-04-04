@@ -22,7 +22,7 @@ public class ManagerMenuHandler implements MenuHandler {
     public void displayMenu() {
         System.out.println("1. Vaata laudade nimikirja");
         System.out.println("2. Broneeri laud");
-        System.out.println("3. ADMIN - Vaata kõiki broneeritud laudu");
+        System.out.println("3. Vaata kõiki broneeritud laudu");
         System.out.println("4. Vaata menüüd");
     }
 

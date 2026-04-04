@@ -81,3 +81,10 @@ Etapi lõpuks peab programm:
 | Table, Reservation, TableService, ReservationService | Denis |
 | MenuItem, Order, OrderItem, MenuService, OrderService | Marina |
 | User, rollid, CommandLineMenu, Main | Jessica |
+
+## KASUTUS
+- clone the represitorium with:
+``` git clone https://github.com/MarinaGorelikovaUT/OOP-Teamwork/ ```
+
+- ehita ja käivita projekt. Jälgi instruktsiooni ja kasuta numbrid programmi valimiseks
+``` mvn exec:java -Dexec.mainClass="com.pizzeria.Main" ```   
