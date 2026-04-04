@@ -16,10 +16,10 @@ public class CommandLineMenu {
     public CommandLineMenu(Role role) {
         this.scanner = new Scanner(System.in);
         this.tableService = new TableService();
+        this.reservationService = new ReservationService(); // ← сначала создаём
         this.manager = new Manager("Juri");
-        this.waiter = new Waiter("Juuri2", null);
+        this.waiter = new Waiter("Juuri2", reservationService); // ← передаём
         this.cook = new Cook("Mari");
-        this.reservationService = new ReservationService();
         this.role = role;
     }
 
