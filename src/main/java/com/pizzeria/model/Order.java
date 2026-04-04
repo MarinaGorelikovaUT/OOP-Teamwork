@@ -44,10 +44,12 @@ public class Order {
         return status;
     }
 
+    // Tagastab tellimuse loomise aja LocalDateTime formaadis
     public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
+    // Tagastab tellimuse loomise aja kujul pp.kk.aaaa tt:mm
     public String getFormattedTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         return createdTime.format(formatter);
@@ -65,6 +67,7 @@ public class Order {
         items.add(item);
     }
 
+    // Kuvab tellimuse kokkuvõtte: number, laud, staatus ja aeg
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

@@ -178,6 +178,7 @@ public class WaiterMenuHandler implements MenuHandler {
         return "WAITER";
     }
 
+    // Kuvab hõivatud lauad ja võimaldab valida teenindatava laua
     private void handleTableService(Scanner scanner) {
         System.out.println("   LAUDADE TEENINDAMINE   \n");
 
@@ -206,6 +207,7 @@ public class WaiterMenuHandler implements MenuHandler {
 
         Table table = tables[num - 1];
 
+        // Otsib aktiivse tellimuse valitud laua järgi
         Order tableOrder = null;
         for (Order order : orderService.getAllOrders()) {
             if (order.getTableNumber() == table.getNumber()) {
@@ -239,6 +241,7 @@ public class WaiterMenuHandler implements MenuHandler {
         scanner.nextLine();
 
         switch (action) {
+            // Esitab arve, ootab kliendi makse kinnitust ja sulgeb tellimuse
             case 1:
                 System.out.println("Arve:");
                 System.out.println("Kogusumma: " + total + "€");
@@ -250,6 +253,8 @@ public class WaiterMenuHandler implements MenuHandler {
                     System.out.println("Tellimus suletud! Laud " + table.getNumber() + " on nüüd vaba.\n");
                 }
                 break;
+
+            // Võimaldab kliendil juurde tellida
             case 2:
                 System.out.println("Dozakaz - tuleb lisada\n");
                 break;

@@ -51,7 +51,7 @@ public class OrderService {
         } return activeOrders;
     }
 
-    // Sulgeb tellimuse ja märgib makstuks
+    // Sulgeb tellimuse, märgib staatuseks PAID ja eemaldab tellimuste nimekirjast
     public void closeOrder(Order order) {
         order.setStatus(Order.OrderStatus.PAID);
         orders.remove(order);
