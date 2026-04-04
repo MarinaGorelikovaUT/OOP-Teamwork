@@ -17,7 +17,7 @@ public class Waiter extends User {
         System.out.println("Ettekandja: " + name);
         System.out.println("Laud: " + table.getNumber());
         
-        // Kontrolli, kas laud on broneeritud
+        
         boolean isReserved = false;
         String customerName = "";
         int guestCount = 0;
@@ -39,7 +39,7 @@ public class Waiter extends User {
             System.out.println("Laud ei ole broneeritud");
         }
         
-        // Muuda laua staatust
+        
         if (table.getStatus() == Table.TableStatus.VABA) {
             table.setStatus(Table.TableStatus.HOIVATUD);
             System.out.println("\nLaud " + table.getNumber() + " on nüüd hõivatud (ilma broneeringuta)");
@@ -50,8 +50,7 @@ public class Waiter extends User {
             System.out.println("\nLaud " + table.getNumber() + " on juba hõivatud");
         }
         
-        // ===== PUUDUV OSA ALGAB SIIT =====
-        // MUUDA TELLIMUSE STAATUST IN_PROGRESS, ET COOK NÄEKS
+      
         List<Order> allOrders = orderService.getAllOrders();
         for (Order order : allOrders) {
             if (order.getTableNumber() == table.getNumber()) {

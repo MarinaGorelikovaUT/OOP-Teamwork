@@ -26,7 +26,6 @@ public class Cook extends User {
             System.out.println("Tooted:");
             
             double total = 0;
-            // Kuvab tooted, märgib lisatellimused [UUS] sildiga
             for (OrderItem item : order.getItems()) {
                 String prefix = item.isNew() ? "[UUS] " : "";
                 System.out.println("  - " + prefix + item.toString());

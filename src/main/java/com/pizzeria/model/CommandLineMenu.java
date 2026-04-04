@@ -25,7 +25,7 @@ public class CommandLineMenu {
         handlers.put(Role.MANAGER, new ManagerMenuHandler(tables, reservationService, menuService));
         handlers.put(Role.WAITER, new WaiterMenuHandler(tables, reservationService, menuService, orderService));
         handlers.put(Role.COOK, new CookMenuHandler(orderService));
-        handlers.put(Role.GUEST, new GuestMenuHandler(tables, reservationService));
+        handlers.put(Role.GUEST, new GuestMenuHandler(tables, reservationService, menuService));
     }
 
     public void run() {

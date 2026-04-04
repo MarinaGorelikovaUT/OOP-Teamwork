@@ -11,7 +11,7 @@ public class WaiterMenuHandler implements MenuHandler {
     private ReservationService reservationService;
     private MenuService menuService;
     private OrderService orderService;
-
+    
     public WaiterMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService, OrderService orderService) {
         this.waiter = new Waiter("Juuri2", reservationService);
         this.tables = tables;
@@ -19,15 +19,14 @@ public class WaiterMenuHandler implements MenuHandler {
         this.menuService = menuService;
         this.orderService = orderService;
     }
-
+    
     @Override
     public void displayMenu() {
         System.out.println("1. Võta tellimus");
         System.out.println("2. Tühista broneering");
         System.out.println("3. Vaata menüüd");
-        System.out.println("4. Teeninda lauda");
     }
-
+    
     @Override
     public void handleInput(int choice, Scanner scanner) {
         switch (choice) {
@@ -41,260 +40,180 @@ public class WaiterMenuHandler implements MenuHandler {
                 menuService.printMenuWithCategoryChoice(scanner);
                 waitForEnter(scanner);
                 break;
-            case 4:
-                handleTableService(scanner);
-                waitForEnter(scanner);
-                break;
             default:
                 System.out.println("Vale valik!\n");
         }
     }
-
+    
     private void handleOrder(Scanner scanner) {
-        System.out.println("   TELLIMUSE VÕTMINE   \n");
-
-        System.out.println("Kõik lauad:");
-        for (Table table : tables) {
-            String info = "Laud " + table.getNumber() + " Staatus: " + table.getStatus();
-            if (table.getStatus() == Table.TableStatus.BRONEERITUD) {
+        // 1. Vali laud
+        System.out.println("\n=== LAUAD ===");
+        for (Table t : tables) {
+            String info = t.getNumber() + ". " + t.getStatus();
+            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
                 for (Reservation r : reservationService.getAllReservations()) {
-                    if (r.getTable().getNumber() == table.getNumber()) {
-                        info += " Broneerija: " + r.getCustomer();
+                    if (r.getTable().getNumber() == t.getNumber()) {
+                        info += " - " + r.getCustomer();
                         break;
                     }
                 }
             }
             System.out.println(info);
         }
-
-        System.out.print("\nMis lauale tellimus (0 tagasi): ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
-
-        if (num == 0) return;
-        if (num < 1 || num > tables.length) {
-            System.out.println("Vale number!\n");
-            return;
-        }
-
-        Table table = tables[num - 1];
-
-        Order newOrder = orderService.createOrder(table.getNumber());
-        System.out.println("Uus tellimus lauale " + table.getNumber() + "\n");
-
-        boolean ordering = true;
-        while (ordering) {
-            menuService.printMenu();
-
-            System.out.print("\nSisesta toote number (0 lõpetamiseks): ");
-            int itemNum = scanner.nextInt();
-            scanner.nextLine();
-
-            if (itemNum == 0) {
-                ordering = false;
-                System.out.println("Tellimus lõpetatud!\n");
-            } else {
-                MenuItem selectedItem = menuService.getByIndex(itemNum - 1);
-                if (selectedItem != null) {
-                    System.out.print("Mitu: ");
-                    int quantity = scanner.nextInt();
-                    scanner.nextLine();
-
-                    orderService.addItem(newOrder, selectedItem, quantity);
-                    System.out.println("Lisatud: " + selectedItem.getName() + " x" + quantity + "\n");
-                } else {
-                    System.out.println("Vale number!\n");
-                }
-            }
-        }
-
-        System.out.println("  TELLIMUSE KOKKUVÕTE  \n");
-        System.out.println("Laud: " + table.getNumber());
-        System.out.println("Tooted:");
-
-        double total = 0;
-        for (OrderItem item : newOrder.getItems()) {
-            double itemTotal = item.getMenuItem().getPrice() * item.getQuantity();
-            System.out.println("  - " + item.getMenuItem().getName() + " x" + item.getQuantity() + " = " + itemTotal + "euro");
-            total += itemTotal;
-        }
-        System.out.println("Kogusumma: " + total + "euro\n");
-
-        waiter.takeOrder(table, orderService);
-
-        System.out.println("Tellimus saadetud kokale!\n");
-        waitForEnter(scanner);
-    }
-
-    private void handleUnbroneeri(Scanner scanner) {
-        System.out.println("  BRONEERINGU TÜHISTAMINE  ");
-
-        System.out.println("Broneeritud lauad:");
-        boolean hasReservations = false;
-
-        for (Table table : tables) {
-            if (table.getStatus() == Table.TableStatus.BRONEERITUD) {
-                String customerName = "";
-                for (Reservation r : reservationService.getAllReservations()) {
-                    if (r.getTable().getNumber() == table.getNumber()) {
-                        customerName = r.getCustomer();
-                        break;
-                    }
-                }
-                System.out.println("Laud " + table.getNumber() + " - " + customerName);
-                hasReservations = true;
-            }
-        }
-
-        if (!hasReservations) {
-            System.out.println("Ühtegi broneeringut pole!\n");
-            waitForEnter(scanner);
-            return;
-        }
-
-        System.out.print("\nVali laua number (0 tagasi): ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
-
-        if (num == 0) return;
-        if (num < 1 || num > tables.length) {
-            System.out.println("Vale number!\n");
-            return;
-        }
-
-        Table table = tables[num - 1];
-        waiter.unbroneeriLaud(table);
-
-        waitForEnter(scanner);
-    }
-
-    private void waitForEnter(Scanner scanner) {
-        System.out.println("\nVajuta Enter jätkamiseks...");
-        scanner.nextLine();
-    }
-
-    @Override
-    public String getRoleName() {
-        return "WAITER";
-    }
-
-    // Kuvab hõivatud lauad ja võimaldab valida teenindatava laua
-    private void handleTableService(Scanner scanner) {
-        System.out.println("   LAUDADE TEENINDAMINE   \n");
-
-        boolean hasOccupied = false;
-        for (Table table : tables) {
-            if (table.getStatus() == Table.TableStatus.HOIVATUD) {
-                System.out.println("Laud " + table.getNumber());
-                hasOccupied = true;
-            }
-        }
-
-        if (!hasOccupied) {
-            System.out.println("Ühtegi hõivatud lauda pole!\n");
-            return;
-        }
-
+        
         System.out.print("\nVali laud (0 tagasi): ");
         int num = scanner.nextInt();
         scanner.nextLine();
-
+        
         if (num == 0) return;
         if (num < 1 || num > tables.length) {
             System.out.println("Vale number!\n");
             return;
         }
-
+        
         Table table = tables[num - 1];
-
-        // Otsib aktiivse tellimuse valitud laua järgi
-        Order tableOrder = null;
-        for (Order order : orderService.getAllOrders()) {
-            if (order.getTableNumber() == table.getNumber()) {
-                tableOrder = order;
-                break;
+        
+        // 2. Loo tellimus
+        Order order = orderService.createOrder(table.getNumber());
+        System.out.println("\nTellimus nr " + order.getOrderNumber() + " lauale " + table.getNumber());
+        
+        // 3. Lisa tooteid
+        boolean done = false;
+        while (!done) {
+            System.out.println("\n[0] Lõpeta  [M] Menüü  [V] Vaata  [X] Eemalda");
+            System.out.print("> ");
+            String cmd = scanner.nextLine().toUpperCase();
+            
+            switch (cmd) {
+                case "0":
+                    if (order.getItems().isEmpty()) {
+                        System.out.println("Tellimus tühi! Lisa tooteid.");
+                    } else {
+                        done = true;
+                    }
+                    break;
+                case "M":
+                    menuService.printMenuWithCategoryChoice(scanner);
+                    break;
+                case "V":
+                    viewOrder(order);
+                    break;
+                case "X":
+                    removeItem(order, scanner);
+                    break;
+                default:
+                    // Proovi lisada: "1 2" = toode 1, kogus 2
+                    String[] parts = cmd.split(" ");
+                    if (parts.length == 2) {
+                        try {
+                            int itemId = Integer.parseInt(parts[0]);
+                            int qty = Integer.parseInt(parts[1]);
+                            MenuItem item = menuService.getByIndex(itemId - 1);
+                            if (item != null && qty > 0) {
+                                orderService.addItem(order, item, qty);
+                                System.out.println("+ " + item.getName() + " x" + qty);
+                            } else {
+                                System.out.println("Vale toote number!");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Kasuta: number kogus (nt: 1 2)");
+                        }
+                    } else {
+                        System.out.println("Kasuta: 0, M, V, X või 'number kogus'");
+                    }
             }
         }
-
-        if (tableOrder == null) {
-            System.out.println("Sellel laual pole aktiivseid tellimusi!\n");
+        
+        // 4. Kinnita tellimus - näita enne kinnitamist
+        System.out.println("\n    KINNITA TELLIMUS   ");
+        viewOrder(order);
+        System.out.print("Kas oled kindel? (J/E): ");
+        
+        if (scanner.nextLine().toUpperCase().equals("J")) {
+            waiter.takeOrder(table, orderService);
+            System.out.println("Tellimus nr " + order.getOrderNumber() + " saadetud kokale!");
+        } else {
+            System.out.println("Tellimus tühistatud.");
+            orderService.getAllOrders().remove(order);
+        }
+        
+        waitForEnter(scanner);
+    }
+    
+    private void viewOrder(Order order) {
+        System.out.println("\n--- TELLIMUS NR " + order.getOrderNumber() + " ---");
+        if (order.getItems().isEmpty()) {
+            System.out.println("(tühi)");
+        } else {
+            double total = 0;
+            for (int i = 0; i < order.getItems().size(); i++) {
+                OrderItem item = order.getItems().get(i);
+                double price = item.getMenuItem().getPrice() * item.getQuantity();
+                System.out.println((i+1) + ". " + item.getMenuItem().getName() + " x" + item.getQuantity() + " = " + price + "euro");
+                total += price;
+            }
+            System.out.println("────────────────────────");
+            System.out.println("Kokku: " + total + "euro");
+        }
+        System.out.println();
+    }
+    
+    private void removeItem(Order order, Scanner scanner) {
+        if (order.getItems().isEmpty()) {
+            System.out.println("Tellimus tühi!");
             return;
         }
-
-        // Näita tellimuse infot
-        System.out.println("\nLaud " + table.getNumber() + " | Tellimus nr: " + tableOrder.getOrderNumber() + " | Staatus: " + tableOrder.getStatus());
-        System.out.println("Tooted:");
-        double total = 0;
-        for (OrderItem item : tableOrder.getItems()) {
-            System.out.println("  - " + item.toString());
-            total += item.getTotalPrice();
-        }
-        System.out.println("Kogusumma: " + total + "€\n");
-
-        // Tegevuste menüü
-        System.out.println("1. Esita arve");
-        System.out.println("2. Klient soovib juurde tellida");
-        System.out.println("0. Tagasi");
-        System.out.print("\nVali tegevus: ");
-
-        int action = scanner.nextInt();
+        viewOrder(order);
+        System.out.print("Eemalda number: ");
+        int idx = scanner.nextInt();
         scanner.nextLine();
-
-        switch (action) {
-            // Esitab arve, ootab kliendi makse kinnitust ja sulgeb tellimuse
-            case 1:
-                // Kontrollib, et tellimus oleks valmis enne arve esitamist
-                if (tableOrder.getStatus() != Order.OrderStatus.READY &&
-                        tableOrder.getStatus() != Order.OrderStatus.DELIVERED) {
-                    System.out.println("Tellimus pole veel valmis! Praegune staatus: " + tableOrder.getStatus() + "\n");
-                    break;
-                }
-
-                System.out.println("Arve:");
-                System.out.println("Kogusumma: " + total + "€");
-                System.out.print("\nKlient maksis? (J/E): ");
-                String confirm = scanner.nextLine();
-                if (confirm.equalsIgnoreCase("J")) {
-                    orderService.closeOrder(tableOrder);
-                    table.setStatus(Table.TableStatus.VABA);
-                    System.out.println("Tellimus suletud! Laud " + table.getNumber() + " on nüüd vaba.\n");
-                }
-                break;
-
-            // Võimaldab kliendil juurde tellida
-            case 2:
-                boolean addingMore = true;
-                while (addingMore) {
-                    System.out.print("\nSisesta toote number (0 lõpetamiseks): ");
-                    int itemNum = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (itemNum == 0) {
-                        addingMore = false;
-                        System.out.println("Lisamine lõpetatud!\n");
-                    } else {
-                        MenuItem selectedItem = menuService.getByIndex(itemNum - 1);
-                        if (selectedItem != null) {
-                            System.out.print("Mitu: ");
-                            int quantity = scanner.nextInt();
-                            scanner.nextLine();
-                            OrderItem addedItem = orderService.addItem(tableOrder, selectedItem, quantity);
-                            addedItem.setNew(true);
-                            System.out.println("Lisatud: " + selectedItem.getName() + " x" + quantity + "\n");
-                        } else {
-                            System.out.println("Vale number!\n");
-                        }
+        if (idx >= 1 && idx <= order.getItems().size()) {
+            OrderItem removed = order.getItems().remove(idx - 1);
+            System.out.println("Eemaldatud: " + removed.getMenuItem().getName());
+        } else {
+            System.out.println("Vale number!");
+        }
+    }
+    
+    private void handleUnbroneeri(Scanner scanner) {
+        System.out.println("\n    BRONEERINGU TÜHISTAMINE   ");
+        boolean found = false;
+        for (Table t : tables) {
+            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
+                String name = "";
+                for (Reservation r : reservationService.getAllReservations()) {
+                    if (r.getTable().getNumber() == t.getNumber()) {
+                        name = r.getCustomer();
+                        break;
                     }
                 }
-
-                // Saadab uuendatud tellimuse uuesti kokale
-                orderService.updateStatus(tableOrder, Order.OrderStatus.IN_PROGRESS);
-                System.out.println("Lisandused saadetud kokale!\n");
-                break;
-            case 0:
-                return;
-            default:
-                System.out.println("Vale valik!\n");
+                System.out.println(t.getNumber() + ". Laud " + t.getNumber() + " - " + name);
+                found = true;
+            }
         }
+        if (!found) {
+            System.out.println("Ühtegi broneeringut pole!");
+            waitForEnter(scanner);
+            return;
+        }
+        
+        System.out.print("\nVali laud (0 tagasi): ");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        if (num == 0) return;
+        if (num >= 1 && num <= tables.length) {
+            waiter.unbroneeriLaud(tables[num - 1]);
+        }
+        waitForEnter(scanner);
+    }
+    
+    private void waitForEnter(Scanner scanner) {
+        System.out.println("\nVajuta Enter...");
+        scanner.nextLine();
+    }
+    
+    @Override
+    public String getRoleName() {
+        return "WAITER";
     }
 }

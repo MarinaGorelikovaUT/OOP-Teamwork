@@ -6,9 +6,9 @@ public class Guest extends User {
         super(name, "Guest");
     }
     
-    // Külaline saab ainult broneerida
+    
     public void reserveTable(Table table, String customerName, int guestCount, ReservationService reservationService) {
-        System.out.println("\n=== LAUDA BRONEERIMINE ===");
+        System.out.println("\n   LAUDA BRONEERIMINE  ");
         
         if (table.getStatus() != Table.TableStatus.VABA) {
             System.out.println("Laud " + table.getNumber() + " on juba broneeritud või hõivatud!\n");

@@ -1,6 +1,8 @@
 package com.pizzeria.model.menu;
 
 import com.pizzeria.model.*;
+import com.pizzeria.service.MenuService;
+
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -8,17 +10,20 @@ public class GuestMenuHandler implements MenuHandler {
     private Guest guest;
     private Table[] tables;
     private ReservationService reservationService;
+    private MenuService menuService;
 
-    public GuestMenuHandler(Table[] tables, ReservationService reservationService) {
+    public GuestMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService) {
         this.guest = new Guest("Külaline");
         this.tables = tables;
         this.reservationService = reservationService;
+        this.menuService = menuService;
     }
 
     @Override
     public void displayMenu() {
         System.out.println("1. Vaata laudu");
         System.out.println("2. Broneeri laud");
+        System.out.println("3. Vaata menüüd");
     }
 
     @Override
@@ -30,6 +35,9 @@ public class GuestMenuHandler implements MenuHandler {
                 break;
             case 2:
                 handleGuestReservation(scanner);
+                break;
+            case 3:
+                menuService.printMenuWithCategoryChoice(scanner);
                 break;
             default:
                 System.out.println("Vale valik!\n");
@@ -47,7 +55,7 @@ public class GuestMenuHandler implements MenuHandler {
     private void handleGuestReservation(Scanner scanner) {
         System.out.println("  LAUDA BRONEERIMINE  \n");
 
-        // 1. Выбор стола — повторяем пока не выберут свободный
+        //  Laua valimine - kordame kuni valitakse vaba laud
         Table table = null;
         while (table == null) {
             viewAllTables();
@@ -71,11 +79,12 @@ public class GuestMenuHandler implements MenuHandler {
             table = selected;
         }
 
-        // 2. Имя
+        // Nimi
         System.out.print("Sisesta oma nimi: ");
         String name = scanner.nextLine();
 
-        // 3. Количество гостей — повторяем пока не введут правильное число
+        // Külaliste arv - kordame kuni sisestatakse õige arv
+
         int count = 0;
         while (count < 1 || count > table.getCapibility()) {
             System.out.print("Sisesta külaliste arv (max " + table.getCapibility() + "): ");
