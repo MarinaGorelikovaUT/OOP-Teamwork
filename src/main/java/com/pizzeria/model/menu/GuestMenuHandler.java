@@ -39,7 +39,7 @@ public class GuestMenuHandler implements MenuHandler {
     private void viewAllTables() {
         System.out.println("  LAUAD \n");
         for (Table table : tables) {
-            System.out.println("Laud " + table.getNumber() + " Mahutavus: " + table.getCapibility() + " Staatus: " + table.getStatus() + "\n");
+            System.out.println("Laud " + table.getNumber() + " | Mahutavus: " + table.getCapibility() + " | Staatus: " + table.getStatus());
         }
         System.out.println();
     }
@@ -47,30 +47,9 @@ public class GuestMenuHandler implements MenuHandler {
     private void handleGuestReservation(Scanner scanner) {
         System.out.println("  LAUDA BRONEERIMINE  \n");
 
-        System.out.print("Sisesta oma nimi: ");
-        String name = scanner.nextLine();
-
-        System.out.print("Sisesta külaliste arv: ");
-        int count = scanner.nextInt();
-        scanner.nextLine();
-
-        // Выбор времени бронирования
-        System.out.print("Kuupäev (aasta): ");
-        int aasta = scanner.nextInt();
-        System.out.print("Kuupäev (kuu): ");
-        int kuu = scanner.nextInt();
-        System.out.print("Kuupäev (päev): ");
-        int paev = scanner.nextInt();
-        System.out.print("Kellaaeg (tunnid): ");
-        int tunnid = scanner.nextInt();
-        System.out.print("Kellaaeg (minutid): ");
-        int minutid = scanner.nextInt();
-        scanner.nextLine();
-
-        LocalDateTime broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
-
-        boolean ok = false;
-        while (!ok) {
+        // 1. Выбор стола — повторяем пока не выберут свободный
+        Table table = null;
+        while (table == null) {
             viewAllTables();
 
             System.out.print("Vali laud (1-" + tables.length + "), 0 tagasi: ");
@@ -79,25 +58,74 @@ public class GuestMenuHandler implements MenuHandler {
 
             if (num == 0) return;
             if (num < 1 || num > tables.length) {
-                System.out.println("Vale number!\n");
+                System.out.println("Vale number! Proovi uuesti.\n");
                 continue;
             }
 
-            Table table = tables[num - 1];
-
-            // Проверка вместимости
-            if (count > table.getCapibility()) {
-                System.out.println("Liiga palju külalisi! Laua mahutavus on " + table.getCapibility() + ". Vali teine laud.\n");
+            Table selected = tables[num - 1];
+            if (selected.getStatus() != Table.TableStatus.VABA) {
+                System.out.println("Laud on juba broneeritud või hõivatud! Vali teine laud.\n");
                 continue;
             }
 
-            ok = reservationService.addReservation(table, name, count, broneeringAeg);
+            table = selected;
+        }
 
-            if (ok) {
-                System.out.println("Broneering tehtud! Laud " + table.getNumber() + " broneeritud " + name + " nimele.\n");
-            } else {
-                System.out.println("Laud on juba broneeritud! Vali teine laud.\n");
+        // 2. Имя
+        System.out.print("Sisesta oma nimi: ");
+        String name = scanner.nextLine();
+
+        // 3. Количество гостей — повторяем пока не введут правильное число
+        int count = 0;
+        while (count < 1 || count > table.getCapibility()) {
+            System.out.print("Sisesta külaliste arv (max " + table.getCapibility() + "): ");
+            count = scanner.nextInt();
+            scanner.nextLine();
+            if (count < 1 || count > table.getCapibility()) {
+                System.out.println("Liiga palju külalisi! Laua mahutavus on " + table.getCapibility() + ". Proovi uuesti.\n");
             }
+        }
+
+
+        System.out.println("Broneeringu aeg:");
+        System.out.println("1. Broneeri kohe (praegune aeg)");
+        System.out.println("2. Vali aeg");
+        System.out.print("Vali: ");
+        int timeChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        LocalDateTime broneeringAeg;
+
+        if (timeChoice == 1) {
+            broneeringAeg = LocalDateTime.now();
+        } else {
+            System.out.print("Kuupäev (aasta): ");
+            int aasta = scanner.nextInt();
+            System.out.print("Kuupäev (kuu): ");
+            int kuu = scanner.nextInt();
+            System.out.print("Kuupäev (päev): ");
+            int paev = scanner.nextInt();
+            System.out.print("Kellaaeg (tunnid): ");
+            int tunnid = scanner.nextInt();
+            System.out.print("Kellaaeg (minutid): ");
+            int minutid = scanner.nextInt();
+            scanner.nextLine();
+
+            try {
+                broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
+            } catch (Exception e) {
+                System.out.println("Vale kuupäev või kellaaeg! Proovi uuesti.\n");
+                waitForEnter(scanner);
+                return;
+            }
+        }
+
+        boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
+
+        if (ok) {
+            System.out.println("Broneering tehtud! Laud " + table.getNumber() + " broneeritud " + name + " nimele.\n");
+        } else {
+            System.out.println("Broneering ebaõnnestus!\n");
         }
 
         waitForEnter(scanner);
