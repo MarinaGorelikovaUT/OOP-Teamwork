@@ -54,6 +54,6 @@ public class Table {
         return "Table{" +
                 ", number=" + number +
                 "capacity=" + capacity +
-                ", status=" + status;
+                ", status=" + status+ "}";
     }
 }

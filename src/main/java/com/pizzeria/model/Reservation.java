@@ -1,5 +1,4 @@
 package com.pizzeria.model;
-import com.pizzeria.model.Table;
 import java.time.LocalDateTime;
 
 public class Reservation {

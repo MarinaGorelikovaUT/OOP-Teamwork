@@ -1,6 +1,7 @@
 package com.pizzeria.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
 public class CommandLineMenu {
@@ -8,23 +9,18 @@ public class CommandLineMenu {
     private Manager manager;
     private Waiter waiter;
     private Cook cook;
-    private Table[] tables;
+    private TableService tableService;
     private ReservationService reservationService;
     private Role role;
 
     public CommandLineMenu(Role role) {
         this.scanner = new Scanner(System.in);
+        this.tableService = new TableService();
         this.manager = new Manager("Juri");
         this.waiter = new Waiter("Juuri2", null);
         this.cook = new Cook("Mari");
         this.reservationService = new ReservationService();
-        this.tables = new Table[6];
         this.role = role;
-
-        // Initsialiseerime tabelid
-        for (int i = 0; i < tables.length; i++) {
-            tables[i] = new Table(6, i + 1);
-        }
     }
 
     public void displayMainMenu() {
@@ -44,6 +40,8 @@ public class CommandLineMenu {
     }
 
     public void processInput(int choice) {
+        List<Table> tables = tableService.getAllTables();
+
         switch (choice) {
             case 1:
                 if (role == Role.MANAGER) manager.viewAllTables(tables, reservationService);
@@ -72,24 +70,8 @@ public class CommandLineMenu {
     private void handleReservation() {
         System.out.println("\nLauda broneerimine\n");
 
-        for (Table table : tables) {
-            System.out.println(
-                "Laud " + table.getNumber() +
-                " | Mahutavus: " + table.getCapibility() +
-                " | Staatus: " + table.getStatus()
-            );
-        }
-
-        System.out.print("Vali laud: ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
-
-        if (num < 1 || num > tables.length) {
-            System.out.println("Vale number!");
-            return;
-        }
-
-        Table table = tables[num - 1];
+        List<Table> tables = tableService.getAllTables();
+        boolean ok = false;
 
         System.out.print("Nimi: ");
         String name = scanner.nextLine();
@@ -98,32 +80,63 @@ public class CommandLineMenu {
         int count = scanner.nextInt();
         scanner.nextLine();
 
-        // Broneering ajaks paneme praeguse aja (edaspidi saab kuupäeva lisada)
-        boolean ok = reservationService.addReservation(
-                table,
-                name,
-                count,
-                LocalDateTime.now()
-        );
+        System.out.print("Kuupäev (aasta): ");
+        int aasta = scanner.nextInt();
+        System.out.print("Kuupäev (kuu): ");
+        int kuu = scanner.nextInt();
+        System.out.print("Kuupäev (päev): ");
+        int paev = scanner.nextInt();
+        System.out.print("Kellaaeg (tunnid): ");
+        int tunnid = scanner.nextInt();
+        System.out.print("Kellaaeg (minutid): ");
+        int minutid = scanner.nextInt();
+        scanner.nextLine();
 
-        if (ok) {
-            System.out.println("✅ Broneering tehtud!");
-        } else {
-            System.out.println("❌ Laud juba broneeritud!");
+        LocalDateTime broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
+
+        while (!ok) {
+            for (Table table : tables) {
+                System.out.println(
+                        "Laud " + table.getNumber() +
+                                " | Mahutavus: " + table.getCapibility() +
+                                " | Staatus: " + table.getStatus()
+                );
+            }
+
+            System.out.print("Vali laud: ");
+            int num = scanner.nextInt();
+            scanner.nextLine();
+
+            if (num < 1 || num > tables.size()) {
+                System.out.println("Vale number!");
+                continue;
+            }
+
+            Table table = tables.get(num - 1);
+
+            ok = reservationService.addReservation(table, name, count, broneeringAeg);
+
+            if (ok) {
+                System.out.println("✅ Broneering tehtud!");
+            } else {
+                System.out.println("❌ Laud juba broneeritud või liiga väike! Vali teine laud.");
+            }
         }
     }
 
     private void handleOrder() {
+        List<Table> tables = tableService.getAllTables();
+
         System.out.print("Mis lauale tellimus: ");
         int num = scanner.nextInt();
         scanner.nextLine();
 
-        if (num < 1 || num > tables.length) {
+        if (num < 1 || num > tables.size()) {
             System.out.println("Vale number!");
             return;
         }
 
-        waiter.takeOrder(tables[num - 1]);
+        waiter.takeOrder(tables.get(num - 1));
     }
 
     public void run() {

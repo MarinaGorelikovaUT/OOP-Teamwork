@@ -1,11 +1,13 @@
 package com.pizzeria.model;
 
-public class Cook extends User{
+import java.util.List;
+
+public class Cook extends User {
     public Cook(String name) {
         super(name, "Cook");
-
     }
-    public void viewOrders(Table[] tables) {
+
+    public void viewOrders(List<Table> tables) {
         System.out.println("\nAktiivsed tellimused:");
 
         for (Table table : tables) {
