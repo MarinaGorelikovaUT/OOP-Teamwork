@@ -4,6 +4,7 @@ import com.pizzeria.model.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Menüü haldamise teenus - sisaldab kõiki pizzeria tooteid ja nende haldamise meetodeid
@@ -24,7 +25,7 @@ public class MenuService {
         menu.add(new MenuItem("Tropicana", "Sinihallitusjuust, juust, sink, ananass, tomatikaste", 8.30, MenuItem.Category.PIZZA));
         menu.add(new MenuItem("Salame", "Juust, oliivid, salaami, tomatikaste", 9.20, MenuItem.Category.PIZZA));
         menu.add(new MenuItem("Vegetaria", "Pehme mozzarella , päikesekuivatatud tomat, tomatikaste, tomat, rukola", 7.90, MenuItem.Category.PIZZA));
-        menu.add(new MenuItem("Napoletana", "Tuunikala, juust, oliivid, sibul, tomatikaste", 12.90, MenuItem.Category.PIZZA));
+        menu.add(new MenuItem("Napoletana", "Tuunikala, juust, oliivid, sibul, tomatikaste", 9.90, MenuItem.Category.PIZZA));
         menu.add(new MenuItem("4 Formaggi", "Cheddar, pehme mozzarella , kadaka suitsujuust, juust, valge kaste", 8.20, MenuItem.Category.PIZZA));
 
         // Lisandid
@@ -116,4 +117,55 @@ public class MenuService {
         return menu.get(index);
     }
 
+    public void printMenuWithCategoryChoice(Scanner scanner) {
+        boolean browsing = true;
+        while (browsing) {
+            System.out.println(
+                    "Vali kategooria:\n" +
+                            "1. Pizza\n" +
+                            "2. Lisandid\n" +
+                            "3. Joogid\n" +
+                            "4. Magustoidud\n" +
+                            "5. Kogu menüü\n" +
+                            "0. Tagasi"
+            );
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            List<MenuItem> items = new ArrayList<>();
+
+            switch (choice) {
+                case 0: browsing = false; break;
+                case 1:
+                    items = getByCategory(MenuItem.Category.PIZZA);
+                    System.out.println("\n=== PIZZA ===");
+                    break;
+                case 2:
+                    items = getByCategory(MenuItem.Category.SIDE);
+                    System.out.println("\n=== LISANDID ===");
+                    break;
+                case 3:
+                    items = getByCategory(MenuItem.Category.DRINK);
+                    System.out.println("\n=== JOOGID ===");
+                    break;
+                case 4:
+                    items = getByCategory(MenuItem.Category.DESSERT);
+                    System.out.println("\n=== MAGUS ===");
+                    break;
+                case 5:
+                    printMenu();
+                    continue;
+                default:
+                    System.out.println("Vale valik!\n");
+                    return;
+            }
+
+            int i = 1;
+            for (MenuItem menuItem : items) {
+                System.out.println(i + ". " + menuItem);
+                System.out.println();
+                i++;
+            }
+        }
+    }
 }

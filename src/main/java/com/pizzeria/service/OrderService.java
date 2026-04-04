@@ -50,4 +50,10 @@ public class OrderService {
             activeOrders.add(order);
         } return activeOrders;
     }
+
+    // Sulgeb tellimuse ja märgib makstuks
+    public void closeOrder(Order order) {
+        order.setStatus(Order.OrderStatus.PAID);
+        orders.remove(order);
+    }
 }

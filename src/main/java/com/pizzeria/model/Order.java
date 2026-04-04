@@ -11,7 +11,7 @@ import java.util.List;
 public class Order {
     // Tellimuse võimalikud staatused
     public enum OrderStatus {
-        NEW, IN_PROGRESS, READY, DELIVERED
+        NEW, IN_PROGRESS, READY, DELIVERED, PAID
     }
 
     private int orderNumber;
@@ -46,6 +46,11 @@ public class Order {
 
     public LocalDateTime getCreatedTime() {
         return createdTime;
+    }
+
+    public String getFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return createdTime.format(formatter);
     }
 
     public List<OrderItem> getItems() {

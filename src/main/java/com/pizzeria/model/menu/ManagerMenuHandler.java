@@ -41,8 +41,7 @@ public class ManagerMenuHandler implements MenuHandler {
                 adminViewAllTables(scanner);
                 break;
             case 4:
-                menuService.printMenu();
-                waitForEnter(scanner);
+                menuService.printMenuWithCategoryChoice(scanner);
                 break;
             default:
                 System.out.println("Vale valik!\n");

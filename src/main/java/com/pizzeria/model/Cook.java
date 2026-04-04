@@ -23,7 +23,7 @@ public class Cook extends User {
             System.out.println("Tellimus nr: " + order.getOrderNumber());
             System.out.println("Laud: " + order.getTableNumber());
             System.out.println("Staatus: " + order.getStatus());
-            System.out.println("Aeg: " + order.getCreatedTime());
+            System.out.println("Aeg: " + order.getFormattedTime());
             System.out.println("Tooted:");
             
             double total = 0;
