@@ -7,6 +7,7 @@ public class TableService {
 
     private List<Table> tabels;
 
+    // Loob teenuse ja lisab vaikimisi lauad restorani
     public TableService() {
         this.tabels = new ArrayList<>();
         this.tabels.add(new Table(6, 1));
@@ -18,10 +19,12 @@ public class TableService {
         this.tabels.add(new Table(2, 7));
     }
 
+    // Tagastab kõikide laudade nimekirja
     public List<Table> getAllTables() {
         return tabels;
     }
 
+    // Tagastab ainult vabade laudade nimekirja
     public List<Table> getAvailableTables() {
         List<Table> availableTables = new ArrayList<>();
 
