@@ -24,14 +24,11 @@ public class Cook extends User {
             System.out.println("Staatus: " + order.getStatus());
             System.out.println("Aeg: " + order.getFormattedTime());
             System.out.println("Tooted:");
-            
-            double total = 0;
+
             for (OrderItem item : order.getItems()) {
                 String prefix = item.isNew() ? "[UUS] " : "";
-                System.out.println("  - " + prefix + item.toString());
-                total += item.getTotalPrice();
+                System.out.println("  - " + prefix + item.getMenuItem().getName() + " x" + item.getQuantity());
             }
-            System.out.printf("Kogusumma: %.2f€%n", total);
             System.out.println("----------------------------------------\n");
         }
     }

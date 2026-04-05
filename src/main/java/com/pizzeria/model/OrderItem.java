@@ -40,5 +40,5 @@ public class OrderItem {
 
     @Override
     public String toString() {
-        return menuItem.getName() + " x" + quantity + " = " + String.format("%.2f", getTotalPrice()) + "€";    }
+        return menuItem.getName() + " x" + quantity + " = " + String.format("%.2f", getTotalPrice()) + " €";    }
 }
