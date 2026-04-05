@@ -3,6 +3,7 @@ package com.pizzeria.model.menu;
 import com.pizzeria.model.*;
 import java.time.LocalDateTime;
 import java.util.Scanner;
+import com.pizzeria.service.MenuService;
 
 public class GuestMenuHandler implements MenuHandler {
     private Guest guest;
@@ -30,7 +31,13 @@ public class GuestMenuHandler implements MenuHandler {
                 handleGuestReservation(scanner);
                 break;
             case 2:
-                menuService.printMenuWithCategoryChoice(scanner);
+                // Kontrolli, et menuService ei ole null
+                if (menuService != null) {
+                    menuService.printMenuWithCategoryChoice(scanner);
+                } else {
+                    System.out.println("Menüü teenus pole saadaval!\n");
+                }
+                waitForEnter(scanner);
                 break;
             default:
                 System.out.println("Vale valik!\n");
@@ -87,7 +94,7 @@ public class GuestMenuHandler implements MenuHandler {
             }
         }
 
-// Broneeringu aja sisestamine
+        // Broneeringu aja sisestamine
         LocalDateTime broneeringAeg = null;
         while (broneeringAeg == null) {
 
@@ -155,7 +162,12 @@ public class GuestMenuHandler implements MenuHandler {
 
         boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
         if (ok) {
-            System.out.println("Broneering tehtud! Laud " + table.getNumber() + " broneeritud " + name + " nimele.\n");
+            System.out.println("\nBroneering tehtud!");
+            System.out.println("  Laud " + table.getNumber());
+            System.out.println("  Broneerija: " + name);
+            System.out.println("  Külalisi: " + count);
+            System.out.println("  Aeg: " + broneeringAeg);
+            System.out.println();
         } else {
             System.out.println("Broneering ebaõnnestus!\n");
         }
