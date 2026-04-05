@@ -57,6 +57,24 @@ public class ReservationService {
         }
     }
 
+    // Tühistab broneeringu
+    public boolean cancelReservation(Table table) {
+        Reservation toRemove = null;
+        for (Reservation r : reservations) {
+            if (r.getTable().getNumber() == table.getNumber()) {
+                toRemove = r;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            reservations.remove(toRemove);
+            table.setStatus(Table.TableStatus.VABA);
+            saveReservations();
+            return true;
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     public void loadReservations() {
         File file = new File("reservations.ser");

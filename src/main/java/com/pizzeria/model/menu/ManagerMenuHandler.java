@@ -25,6 +25,7 @@ public class ManagerMenuHandler implements MenuHandler {
         System.out.println("2. Broneeri laud");
         System.out.println("3. Vaata kõiki broneeritud laudu");
         System.out.println("4. Vaata menüüd");
+        System.out.println("5. Tühista broneering");
     }
 
     @Override
@@ -42,6 +43,9 @@ public class ManagerMenuHandler implements MenuHandler {
                 break;
             case 4:
                 menuService.printMenuWithCategoryChoice(scanner);
+                break;
+            case 5:
+                handleUnbroneeri(scanner);
                 break;
             default:
                 System.out.println("Vale valik!\n");
@@ -196,6 +200,45 @@ public class ManagerMenuHandler implements MenuHandler {
         }
         System.out.println("Broneeringuid kokku: " + reservationService.getAllReservations().size() + "\n");
 
+        waitForEnter(scanner);
+    }
+
+    // Tühistab broneeringu
+    private void handleUnbroneeri(Scanner scanner) {
+        System.out.println("\n  BRONEERINGU TÜHISTAMINE  \n");
+        boolean found = false;
+        for (Table t : tables) {
+            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
+                String name = "";
+                for (Reservation r : reservationService.getAllReservations()) {
+                    if (r.getTable().getNumber() == t.getNumber()) {
+                        name = r.getCustomer();
+                        break;
+                    }
+                }
+                System.out.println(t.getNumber() + ". Laud " + t.getNumber() + " - " + name);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("Ühtegi broneeringut pole!\n");
+            waitForEnter(scanner);
+            return;
+        }
+        System.out.print("\nVali laud (0 tagasi): ");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        if (num == 0) return;
+        if (num >= 1 && num <= tables.length) {
+            boolean ok = reservationService.cancelReservation(tables[num - 1]);
+            if (ok) {
+                System.out.println("Broneering tühistatud! Laud " + num + " on nüüd vaba.\n");
+            } else {
+                System.out.println("Ei leitud broneeringut!\n");
+            }
+        } else {
+            System.out.println("Vale number!\n");
+        }
         waitForEnter(scanner);
     }
 

@@ -67,6 +67,15 @@ public class Order {
         items.add(item);
     }
 
+    // Arvutab tellimuse kogusumma
+    public double getTotalPrice() {
+        double total = 0;
+        for (OrderItem item : items) {
+            total += item.getTotalPrice();
+        }
+        return total;
+    }
+
     // Kuvab tellimuse kokkuvõtte: number, laud, staatus ja aeg
     @Override
     public String toString() {
