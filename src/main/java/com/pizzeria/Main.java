@@ -18,6 +18,7 @@ public class Main {
         TableService tableService = new TableService();
         Table[] tables = tableService.getAllTables().toArray(new Table[0]);
         ReservationService reservationService = new ReservationService();
+        reservationService.loadReservations();
         OrderService orderService = new OrderService();
 
         while (true) {

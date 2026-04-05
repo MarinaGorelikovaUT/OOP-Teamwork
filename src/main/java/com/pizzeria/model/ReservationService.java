@@ -38,6 +38,7 @@ public class ReservationService {
         Reservation reservation = new Reservation(customer, guestCount, table, time);
         reservations.add(reservation);
         table.setStatus(BRONEERITUD);
+        saveReservations();
 
         return true;
     }

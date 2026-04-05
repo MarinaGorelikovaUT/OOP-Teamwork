@@ -79,9 +79,9 @@ Kõik planeeritud funktsionaalsus on realiseeritud ja toimib. Programm käivitub
 **Broneeringud:**
 - Realiseeris klassi `Reservation` mis salvestab külalise nime, külaliste arvu, laua ja broneeringu aja
 - `ReservationService` kontrollib broneerimise käigus laua saadavust ja mahutavust
-- Broneeringud salvestatakse faili Java serialiseerimise abil — andmed ei lähe kaduma programmi taaskäivitamisel
 - Broneerimisprotsess võimaldab valida konkreetse kuupäeva ja kellaaja
 - Lisas valideerimise — ei saa broneerida rohkem külalisi kui laual mahub, ega sisestada valet kuupäeva
+- Realiseeris broneeringute salvestamise Java serialiseerimise abil — salvestamine vajab veel parandamist
 
 ---
 
@@ -102,7 +102,7 @@ Kõik planeeritud funktsionaalsus on realiseeritud ja toimib. Programm käivitub
 - Lisatellimused märgistatakse kokale `[UUS]` sildiga
 - Tellimust ei saa sulgeda enne kui kokk on selle valmis märkinud
 - Pärast tasumist eemaldatakse tellimus süsteemist ja laud vabastatakse
-
+- Pärast makse kinnitamist saab ettekandja printida kviitungi koos toodete nimekirja ja kogusummaga
 ---
 
 ### Jessica — kasutajad, rollid ja käsurea menüü
@@ -144,7 +144,7 @@ Vali number ja sisene oma rolli. Iga roll näeb ainult oma tööks vajalikke val
 
 ### Rollid ja nende võimalused
 
-**Manager** haldab laudu ja broneeringuid. Ta näeb kõigi laudade seisu koos staatuste ja broneeringute infoga, saab broneerida lauda valitud ajaks ning vaadata kõiki aktiivseid broneeringuid. Lisaks saab manager sirvida pizzeria menüüd kategooriate kaupa.
+**Manager** haldab laudu ja broneeringuid. Ta näeb kõigi laudade seisu koos staatuste ja broneeringute infoga, saab broneerida lauda valitud ajaks, vaadata ja tühistada broneeringuid. Lisaks saab manager vaadata kõiki aktiivseid tellimusi koos toodete ja kogusummaga ning sirvida pizzeria menüüd kategooriate kaupa.
 
 **Ettekandja** loob tellimusi ja teenindab laudu. Uue tellimuse loomisel valib ettekandja laua ja lisab tooteid — menüü avamiseks vajuta `M`, hetke tellimuse vaatamiseks `V`, toote eemaldamiseks `X` ja lõpetamiseks `0`. Toote lisamiseks kirjuta toote number ja kogus tühikuga (nt `1 2`). Laua teenindamisel saab ettekandja vaadata aktiivset tellimust, võtta vastu lisatellimusi ja esitada arve — aga ainult siis, kui kokk on tellimuse valmis märkinud. Pärast makse kinnitamist vabastatakse laud automaatselt.
 
@@ -170,5 +170,17 @@ NEW → IN_PROGRESS → READY → PAID
 1. Kasutaja valib vaba laua — süsteem näitab kõigi laudade seisu
 2. Sisestab nime ja külaliste arvu — süsteem kontrollib mahutavust
 3. Sisestab broneeringu kuupäeva ja kellaaja — süsteem valideerib andmed
-4. Broneering salvestatakse ja laua staatus muutub `BRONEERITUD`
-5. Broneeringud säilivad programmi taaskäivitamisel kuna andmed salvestatakse faili
+4. Broneering salvestatakse, laua staatus muutub `BRONEERITUD` ja külaline saab kinnituse
+
+## Teadaolevad vead ja planeeritavad täiendused
+
+### Teadaolevad vead
+- **Sisendi valideerimine:** kui kasutaja sisestab numbri asemel tähe, läheb programm kokku. Plaanime selle vea järgmises etapis parandada.
+- **Broneeringu loogika:** hetkel muutub laud kohe broneerituks ja on teistele kättesaamatu kuni broneeringu tühistamiseni, sõltumata broneeringu kellaajast. Näiteks kui broneering on tehtud homseks kella 18:00-ks, ei saa lauda täna õhtul ega homme hommikul kasutada. Plaanime broneeringu loogika ümber teha nii, et laud blokeeritaks ainult konkreetsel broneeringu ajal.
+- **Broneeringute salvestamine:** broneeringud ei säili programmi taaskäivitamisel.
+
+### Planeeritavad täiendused
+- **Tellimuste salvestamine:** hetkel ei salvestata tellimusi, andmed kaovad pärast programmi sulgemist. Plaanime lisada tellimuste salvestamise järgmises etapis.
+- **Restorani lahtiolekuajad:** hetkel saab lauda broneerida ükskõik milliseks kellaajaks, ka öösel. Plaanime lisada valideerimise restorani lahtiolekuaegade põhjal.
+- **Tellimuste ajalugu:** manager näeb hetkel ainult aktiivseid tellimusi, suletud tellimused kaovad süsteemist. Plaanime lisada tellimuste ajaloo vaatamise võimaluse.
+- **Broneeringu otsing:** hetkel puudub võimalus otsida broneeringut külalise nime järgi. Plaanime lisada otsingufunktsionaalsuse järgmises etapis.
