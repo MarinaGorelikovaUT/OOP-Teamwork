@@ -63,21 +63,112 @@ Programmi juhitakse terminalis tekstimenüü kaudu. Kasutaja näeb saadaolevate 
 - Main.java: programmi käivitamine ja üldine juhtloogika
 - Lihtne "autoriseerimine" — rolli valimine programmi käivitamisel
 
-## Etapi 1 tulemus
+---
 
-Etapi lõpuks peab programm:
-- käivituma terminalis
-- võimaldama valida kasutaja rolli
-- kuvama laudade nimekirja koos staatustega
-- vastu võtma broneeringuid ja kontrollima laua saadavust
-- kuvama pizzeria menüüd koos hindadega
-- looma tellimuse, mis on seotud kindla lauaga
-- töötama vigadeta põhiliste kasutusstsenaariumite korral
+## Etapi 1 kokkuvõte
 
-## Mis esitatakse
+Kõik planeeritud funktsionaalsus on realiseeritud ja toimib. Programm käivitub terminalis, võimaldab valida rolli ning kasutada kõiki põhifunktsioone. Allpool kirjeldame, mida igaüks meeskonnast tegi ja kuidas programm toimib.
 
-| Klassid | Kes |
-|---------|-----|
-| Table, Reservation, TableService, ReservationService | Denis |
-| MenuItem, Order, OrderItem, MenuService, OrderService | Marina |
-| User, rollid, CommandLineMenu, Main | Jessica |
+### Denis — lauad ja broneeringud
+
+**Lauad ja staatused:**
+- Realiseeris klassi `Table` väljadega number, mahutavus ja staatus
+- Lisas `TableService` klassi mis haldab kõiki restorani laudu ja pakub meetodeid vabade laudade otsimiseks
+- Lauad on erineva mahutavusega (2 ja 6 kohta)
+
+**Broneeringud:**
+- Realiseeris klassi `Reservation` mis salvestab külalise nime, külaliste arvu, laua ja broneeringu aja
+- `ReservationService` kontrollib broneerimise käigus laua saadavust ja mahutavust
+- Broneeringud salvestatakse faili Java serialiseerimise abil — andmed ei lähe kaduma programmi taaskäivitamisel
+- Broneerimisprotsess võimaldab valida konkreetse kuupäeva ja kellaaja
+- Lisas valideerimise — ei saa broneerida rohkem külalisi kui laual mahub, ega sisestada valet kuupäeva
+
+---
+
+### Marina — menüü ja tellimused
+
+**Menüü:**
+- Realiseeris klassi `MenuItem` väljadega nimi, kirjeldus, hind ja kategooria
+- Kategooriad on realiseeritud `enum`-ina: `PIZZA`, `SIDE`, `DRINK`, `DESSERT`
+- `MenuService` sisaldab kogu pizzeria menüüd ja pakub meetodeid toodete otsimiseks nime, numbri ja kategooria järgi
+- Lisas meetodi `printMenuWithCategoryChoice()` mis võimaldab sirvida menüüd kategooriate kaupa navigeerimisega ja tagasiliikumisega
+
+**Tellimused:**
+- Realiseeris klassid `Order`, `OrderItem` ja `OrderService`
+- `Order` kasutab `enum OrderStatus` staatuste jaoks: `NEW`, `IN_PROGRESS`, `READY`, `DELIVERED`, `PAID`
+- Tellimuse loomise ajal salvestatakse `LocalDateTime` tempelmärk ja genereeritakse automaatne unikaalne number
+- `OrderItem` sisaldab lippu `isNew` lisatellimuste märgistamiseks
+- Ettekandja saab luua tellimuse, lisada tooteid, vastu võtta lisatellimusi ja sulgeda tellimuse pärast makse laekumist
+- Lisatellimused märgistatakse kokale `[UUS]` sildiga
+- Tellimust ei saa sulgeda enne kui kokk on selle valmis märkinud
+- Pärast tasumist eemaldatakse tellimus süsteemist ja laud vabastatakse
+
+---
+
+### Jessica — kasutajad, rollid ja käsurea menüü
+
+**Kasutajad ja rollid:**
+- Realiseeris kasutajate hierarhia: `User`, `Manager`, `Waiter`, `Cook`, `Guest`
+- Rollid on realiseeritud `enum`-ina: `MANAGER`, `WAITER`, `COOK`, `GUEST`
+- Programmi käivitamisel valib kasutaja oma rolli
+
+**Käsurea menüü:**
+- Ehitas CLI arhitektuuri Handler-mustri alusel — iga rollil on oma `MenuHandler` klass
+- `CommandLineMenu` haldab programmi voogu ja suunab tegevused õigele handler-ile
+- Realiseeris eraldi handler-id: `ManagerMenuHandler`, `WaiterMenuHandler`, `CookMenuHandler`, `GuestMenuHandler`
+- Ettekandja liides võimaldab lisada tooteid käsklustega `M` (menüü), `V` (vaata tellimust), `X` (eemalda toode), `0` (lõpeta)
+- Iga roll näeb ainult oma rolli jaoks mõeldud menüüvalikuid
+
+## Programmi kirjeldus
+
+Pizzeria haldussüsteem on käsurealt kasutatav Java rakendus, mis simuleerib pizzeria igapäevast tööd. Programm toetab nelja erinevat rolli: manager, ettekandja, kokk ja külaline.
+
+---
+
+### Programmi käivitamine
+
+Programm käivitatakse `Main.java` klassi käivitamisega IntelliJ IDEA-s. Kohe avaneb rolli valiku menüü:
+```
+---PIZZERIA SÜSTEEM---
+Vali roll:
+1. Manager
+2. Ettekandja
+3. Kokk
+4. Külaline (broneerimiseks)
+9. Välju programmist
+```
+
+Vali number ja sisene oma rolli. Iga roll näeb ainult oma tööks vajalikke valikuid. Rolli vahetamiseks logi välja (valik `0`) ja vali uus roll.
+
+---
+
+### Rollid ja nende võimalused
+
+**Manager** haldab laudu ja broneeringuid. Ta näeb kõigi laudade seisu koos staatuste ja broneeringute infoga, saab broneerida lauda valitud ajaks ning vaadata kõiki aktiivseid broneeringuid. Lisaks saab manager sirvida pizzeria menüüd kategooriate kaupa.
+
+**Ettekandja** loob tellimusi ja teenindab laudu. Uue tellimuse loomisel valib ettekandja laua ja lisab tooteid — menüü avamiseks vajuta `M`, hetke tellimuse vaatamiseks `V`, toote eemaldamiseks `X` ja lõpetamiseks `0`. Toote lisamiseks kirjuta toote number ja kogus tühikuga (nt `1 2`). Laua teenindamisel saab ettekandja vaadata aktiivset tellimust, võtta vastu lisatellimusi ja esitada arve — aga ainult siis, kui kokk on tellimuse valmis märkinud. Pärast makse kinnitamist vabastatakse laud automaatselt.
+
+**Kokk** näeb kõiki aktiivseid tellimusi koos toodete, koguste ja loomise ajaga. Lisatellimused on märgistatud `[UUS]` sildiga, et oleks kohe näha mis vajab tähelepanu. Kui tooted on valmis, märgib kokk tellimuse valmis.
+
+**Külaline** saab broneerida laua ja sirvida menüüd. Broneerimiseks valib külaline vaba laua, sisestab nime, külaliste arvu ja soovitud aja. Süsteem kontrollib automaatselt mahutavust ja kuupäeva korrektsust.
+
+---
+
+### Tellimuse elutsükkel
+```
+NEW → IN_PROGRESS → READY → PAID
+```
+
+1. Ettekandja loob tellimuse ja kinnitab selle — staatus `IN_PROGRESS`, tellimus läheb kokale
+2. Kokk valmistab tooted ja märgib tellimuse valmis — staatus `READY`
+3. Ettekandja esitab arve ja klient tasub — staatus `PAID`, laud vabastatakse automaatselt
+
+---
+
+### Broneeringu protsess
+
+1. Kasutaja valib vaba laua — süsteem näitab kõigi laudade seisu
+2. Sisestab nime ja külaliste arvu — süsteem kontrollib mahutavust
+3. Sisestab broneeringu kuupäeva ja kellaaja — süsteem valideerib andmed
+4. Broneering salvestatakse ja laua staatus muutub `BRONEERITUD`
+5. Broneeringud säilivad programmi taaskäivitamisel kuna andmed salvestatakse faili
