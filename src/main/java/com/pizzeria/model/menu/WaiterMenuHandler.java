@@ -299,6 +299,22 @@ public class WaiterMenuHandler implements MenuHandler {
                     orderService.closeOrder(tableOrder);
                     table.setStatus(Table.TableStatus.VABA);
                     System.out.println("Tellimus suletud! Laud " + table.getNumber() + " on nüüd vaba.\n");
+
+                    // Küsi kviitungi printimist
+                    System.out.print("Kas soovite kviitungit printida? (J/E): ");
+                    String printChoice = scanner.nextLine();
+                    if (printChoice.equalsIgnoreCase("J")) {
+                        System.out.println("\n========== KVIITUNG ==========");
+                        System.out.println("Laud: " + table.getNumber());
+                        for (OrderItem item : tableOrder.getItems()) {
+                            System.out.println("  " + item.getMenuItem().getName() +
+                                    " x" + item.getQuantity() +
+                                    " - " + String.format("%.2f", item.getMenuItem().getPrice() * item.getQuantity()) + " €");
+                        }
+                        System.out.println("------------------------------");
+                        System.out.println("KOKKU: " + String.format("%.2f", tableOrder.getTotalPrice()) + " €");
+                        System.out.println("==============================\n");
+                    }
                 }
                 break;
 

@@ -166,8 +166,7 @@ public class GuestMenuHandler implements MenuHandler {
             System.out.println("  Laud " + table.getNumber());
             System.out.println("  Broneerija: " + name);
             System.out.println("  Külalisi: " + count);
-            System.out.println("  Aeg: " + broneeringAeg);
-            System.out.println();
+            System.out.println("  Aeg: " + broneeringAeg.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));            System.out.println();
         } else {
             System.out.println("Broneering ebaõnnestus!\n");
         }
