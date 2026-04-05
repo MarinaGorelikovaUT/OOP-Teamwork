@@ -105,24 +105,68 @@ public class ManagerMenuHandler implements MenuHandler {
         if (timeChoice == 1) {
             broneeringAeg = LocalDateTime.now();
         } else {
-            System.out.print("Kuupäev (aasta): ");
-            int aasta = scanner.nextInt();
-            System.out.print("Kuupäev (kuu): ");
-            int kuu = scanner.nextInt();
-            System.out.print("Kuupäev (päev): ");
-            int paev = scanner.nextInt();
-            System.out.print("Kellaaeg (tunnid): ");
-            int tunnid = scanner.nextInt();
-            System.out.print("Kellaaeg (minutid): ");
-            int minutid = scanner.nextInt();
-            scanner.nextLine();
+            broneeringAeg = null;
+            while (broneeringAeg == null) {
+                // Aasta
+                int aasta;
+                while (true) {
+                    System.out.print("Kuupäev (aasta, 2024-2099): ");
+                    aasta = scanner.nextInt();
+                    scanner.nextLine();
+                    if (aasta >= 2024 && aasta <= 2099) break;
+                    System.out.println("Vale aasta! Sisesta vahemikus 2024-2099.\n");
+                }
 
-            try {
-                broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
-            } catch (Exception e) {
-                System.out.println("Vale kuupäev või kellaaeg! Proovi uuesti.\n");
-                waitForEnter(scanner);
-                return;
+                // Kuu
+                int kuu;
+                while (true) {
+                    System.out.print("Kuupäev (kuu, 1-12): ");
+                    kuu = scanner.nextInt();
+                    scanner.nextLine();
+                    if (kuu >= 1 && kuu <= 12) break;
+                    System.out.println("Vale kuu! Sisesta vahemikus 1-12.\n");
+                }
+
+                // Päev
+                int paev;
+                while (true) {
+                    System.out.print("Kuupäev (päev, 1-31): ");
+                    paev = scanner.nextInt();
+                    scanner.nextLine();
+                    if (paev >= 1 && paev <= 31) break;
+                    System.out.println("Vale päev! Sisesta vahemikus 1-31.\n");
+                }
+
+                // Tunnid
+                int tunnid;
+                while (true) {
+                    System.out.print("Kellaaeg (tunnid, 0-23): ");
+                    tunnid = scanner.nextInt();
+                    scanner.nextLine();
+                    if (tunnid >= 0 && tunnid <= 23) break;
+                    System.out.println("Vale tund! Sisesta vahemikus 0-23.\n");
+                }
+
+                // Minutid
+                int minutid;
+                while (true) {
+                    System.out.print("Kellaaeg (minutid, 0-59): ");
+                    minutid = scanner.nextInt();
+                    scanner.nextLine();
+                    if (minutid >= 0 && minutid <= 59) break;
+                    System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
+                }
+
+                try {
+                    LocalDateTime kandidaat = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
+                    if (kandidaat.isBefore(LocalDateTime.now())) {
+                        System.out.println("Viga: aeg on minevikus! Proovi uuesti.\n");
+                    } else {
+                        broneeringAeg = kandidaat;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Vale kuupäev! (nt 31. veebruar ei eksisteeri) Proovi uuesti.\n");
+                }
             }
         }
 

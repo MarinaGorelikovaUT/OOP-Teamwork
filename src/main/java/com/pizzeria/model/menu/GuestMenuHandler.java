@@ -1,8 +1,6 @@
 package com.pizzeria.model.menu;
 
 import com.pizzeria.model.*;
-import com.pizzeria.service.MenuService;
-
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -79,7 +77,6 @@ public class GuestMenuHandler implements MenuHandler {
         String name = scanner.nextLine();
 
         // Külaliste arv - kordame kuni sisestatakse õige arv
-
         int count = 0;
         while (count < 1 || count > table.getCapibility()) {
             System.out.print("Sisesta külaliste arv (max " + table.getCapibility() + "): ");
@@ -90,32 +87,73 @@ public class GuestMenuHandler implements MenuHandler {
             }
         }
 
-
 // Broneeringu aja sisestamine
-        System.out.println("\nSisesta broneeringu aeg:");
-        System.out.print("Aasta: ");
-        int aasta = scanner.nextInt();
-        System.out.print("Kuu: ");
-        int kuu = scanner.nextInt();
-        System.out.print("Päev: ");
-        int paev = scanner.nextInt();
-        System.out.print("Tund (0-23): ");
-        int tunnid = scanner.nextInt();
-        System.out.print("Minut (0-59): ");
-        int minutid = scanner.nextInt();
-        scanner.nextLine();
+        LocalDateTime broneeringAeg = null;
+        while (broneeringAeg == null) {
 
-        LocalDateTime broneeringAeg;
-        try {
-            broneeringAeg = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
-        } catch (Exception e) {
-            System.out.println("Vale kuupäev või kellaaeg! Proovi uuesti.\n");
-            waitForEnter(scanner);
-            return;
+            // Aasta
+            int aasta = 0;
+            while (aasta < 2026 || aasta > 2099) {
+                System.out.print("Kuupäev (aasta, 2026-2099): ");
+                aasta = scanner.nextInt();
+                scanner.nextLine();
+                if (aasta < 2026 || aasta > 2099)
+                    System.out.println("Vale aasta! Sisesta vahemikus 2026-2099.\n");
+            }
+
+            // Kuu
+            int kuu = 0;
+            while (kuu < 1 || kuu > 12) {
+                System.out.print("Kuupäev (kuu, 1-12): ");
+                kuu = scanner.nextInt();
+                scanner.nextLine();
+                if (kuu < 1 || kuu > 12)
+                    System.out.println("Vale kuu! Sisesta vahemikus 1-12.\n");
+            }
+
+            // Päev
+            int paev = 0;
+            while (paev < 1 || paev > 31) {
+                System.out.print("Kuupäev (päev, 1-31): ");
+                paev = scanner.nextInt();
+                scanner.nextLine();
+                if (paev < 1 || paev > 31)
+                    System.out.println("Vale päev! Sisesta vahemikus 1-31.\n");
+            }
+
+            // Tunnid
+            int tunnid = 0;
+            while (tunnid < 0 || tunnid > 23) {
+                System.out.print("Kellaaeg (tunnid, 0-23): ");
+                tunnid = scanner.nextInt();
+                scanner.nextLine();
+                if (tunnid < 0 || tunnid > 23)
+                    System.out.println("Vale tund! Sisesta vahemikus 0-23.\n");
+            }
+
+            // Minutid
+            int minutid = -1;
+            while (minutid < 0 || minutid > 59) {
+                System.out.print("Kellaaeg (minutid, 0-59): ");
+                minutid = scanner.nextInt();
+                scanner.nextLine();
+                if (minutid < 0 || minutid > 59)
+                    System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
+            }
+
+            try {
+                LocalDateTime kandidaat = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
+                if (kandidaat.isBefore(LocalDateTime.now())) {
+                    System.out.println("Viga: broneeringu aeg on minevikus! Proovi uuesti.\n");
+                } else {
+                    broneeringAeg = kandidaat;
+                }
+            } catch (Exception e) {
+                System.out.println("Vale kuupäev! (nt 31. veebruar ei eksisteeri) Proovi uuesti.\n");
+            }
         }
 
         boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
-
         if (ok) {
             System.out.println("Broneering tehtud! Laud " + table.getNumber() + " broneeritud " + name + " nimele.\n");
         } else {
