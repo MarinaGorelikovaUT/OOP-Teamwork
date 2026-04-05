@@ -11,12 +11,12 @@ public class GuestMenuHandler implements MenuHandler {
     private ReservationService reservationService;
     private MenuService menuService;
 
-    // PARANDUS 1: Konstruktor võtab menuService parameetri
+    // Konstruktor võtab menuService parameetri
     public GuestMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService) {
         this.guest = new Guest("Külaline");
         this.tables = tables;
         this.reservationService = reservationService;
-        this.menuService = menuService;  // NÜÜD ÕIGE
+        this.menuService = menuService; 
     }
 
     @Override

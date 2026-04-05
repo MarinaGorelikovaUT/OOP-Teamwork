@@ -1,4 +1,4 @@
-//to run program enter in terminal
+//selleks et kaivitada
 // mvn exec:java -Dexec.mainClass="com.pizzeria.Main"
 
 package com.pizzeria;
