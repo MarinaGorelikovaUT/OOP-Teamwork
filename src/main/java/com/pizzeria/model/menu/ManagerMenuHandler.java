@@ -2,6 +2,8 @@ package com.pizzeria.model.menu;
 
 import com.pizzeria.model.*;
 import com.pizzeria.service.MenuService;
+import com.pizzeria.service.OrderService;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -11,12 +13,15 @@ public class ManagerMenuHandler implements MenuHandler {
     private Table[] tables;
     private ReservationService reservationService;
     private MenuService menuService;
+    private OrderService orderService;
 
-    public ManagerMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService) {
+
+    public ManagerMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService, OrderService orderService) {
         this.manager = new Manager("Juri");
         this.tables = tables;
         this.reservationService = reservationService;
         this.menuService = menuService;
+        this.orderService = orderService;
     }
 
     @Override
@@ -26,6 +31,7 @@ public class ManagerMenuHandler implements MenuHandler {
         System.out.println("3. Vaata kõiki broneeritud laudu");
         System.out.println("4. Vaata menüüd");
         System.out.println("5. Tühista broneering");
+        System.out.println("6. Vaata kõiki tellimusi");
     }
 
     @Override
@@ -47,9 +53,38 @@ public class ManagerMenuHandler implements MenuHandler {
             case 5:
                 handleUnbroneeri(scanner);
                 break;
+            case 6:
+                viewAllOrders(scanner);
+                break;
             default:
                 System.out.println("Vale valik!\n");
         }
+    }
+
+    // Kuvab kõik aktiivsed tellimused koos toodete ja kogusummaga
+    private void viewAllOrders(Scanner scanner) {
+        System.out.println("\n  KÕIK TELLIMUSED  \n");
+        if (orderService.getAllOrders().isEmpty()) {
+            System.out.println("Ühtegi tellimust pole!\n");
+            waitForEnter(scanner);
+            return;
+        }
+        for (Order order : orderService.getAllOrders()) {
+            System.out.println("----------------------------------------");
+            System.out.println("Tellimus nr: " + order.getOrderNumber());
+            System.out.println("Laud: " + order.getTableNumber());
+            System.out.println("Staatus: " + order.getStatus());
+            System.out.println("Aeg: " + order.getFormattedTime());
+            System.out.println("Tooted:");
+            for (OrderItem item : order.getItems()) {
+                System.out.println("  - " + item.getMenuItem().getName() +
+                        " x" + item.getQuantity() +
+                        " = " + String.format("%.2f", item.getTotalPrice()) + " €");
+            }
+            System.out.printf("Kogusumma: %.2f €%n", order.getTotalPrice());
+            System.out.println("----------------------------------------\n");
+        }
+        waitForEnter(scanner);
     }
 
     private void handleReservation(Scanner scanner) {
