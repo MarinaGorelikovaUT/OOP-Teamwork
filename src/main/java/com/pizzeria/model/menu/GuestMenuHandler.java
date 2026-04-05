@@ -101,7 +101,7 @@ public class GuestMenuHandler implements MenuHandler {
             // Aasta
             int aasta = 0;
             while (aasta < 2026 || aasta > 2099) {
-                System.out.print("Kuupäev (aasta, 2026-2099): ");
+                System.out.print("Kuupäev (aasta): ");
                 aasta = scanner.nextInt();
                 scanner.nextLine();
                 if (aasta < 2026 || aasta > 2099)
@@ -111,7 +111,7 @@ public class GuestMenuHandler implements MenuHandler {
             // Kuu
             int kuu = 0;
             while (kuu < 1 || kuu > 12) {
-                System.out.print("Kuupäev (kuu, 1-12): ");
+                System.out.print("Kuupäev (kuu): ");
                 kuu = scanner.nextInt();
                 scanner.nextLine();
                 if (kuu < 1 || kuu > 12)
@@ -121,7 +121,7 @@ public class GuestMenuHandler implements MenuHandler {
             // Päev
             int paev = 0;
             while (paev < 1 || paev > 31) {
-                System.out.print("Kuupäev (päev, 1-31): ");
+                System.out.print("Kuupäev (päev): ");
                 paev = scanner.nextInt();
                 scanner.nextLine();
                 if (paev < 1 || paev > 31)
@@ -129,9 +129,9 @@ public class GuestMenuHandler implements MenuHandler {
             }
 
             // Tunnid
-            int tunnid = 0;
+            int tunnid = -1;
             while (tunnid < 0 || tunnid > 23) {
-                System.out.print("Kellaaeg (tunnid, 0-23): ");
+                System.out.print("Kellaaeg (tunnid): ");
                 tunnid = scanner.nextInt();
                 scanner.nextLine();
                 if (tunnid < 0 || tunnid > 23)
@@ -141,7 +141,7 @@ public class GuestMenuHandler implements MenuHandler {
             // Minutid
             int minutid = -1;
             while (minutid < 0 || minutid > 59) {
-                System.out.print("Kellaaeg (minutid, 0-59): ");
+                System.out.print("Kellaaeg (minutid): ");
                 minutid = scanner.nextInt();
                 scanner.nextLine();
                 if (minutid < 0 || minutid > 59)
