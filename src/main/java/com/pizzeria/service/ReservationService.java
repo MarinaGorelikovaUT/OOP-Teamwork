@@ -1,4 +1,7 @@
-package com.pizzeria.model;
+package com.pizzeria.service;
+
+import com.pizzeria.model.Reservation;
+import com.pizzeria.model.Table;
 
 import java.io.File;
 import java.io.FileInputStream;

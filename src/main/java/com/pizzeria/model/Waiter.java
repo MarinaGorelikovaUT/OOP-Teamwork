@@ -3,6 +3,7 @@ package com.pizzeria.model;
 import java.util.List;
 
 import com.pizzeria.service.OrderService;
+import com.pizzeria.service.ReservationService;
 
 public class Waiter extends User {
     private ReservationService reservationService;
