@@ -65,8 +65,7 @@ public class WaiterMenuHandler implements MenuHandler {
         }
         
         System.out.print("\nVali laud (0 tagasi): ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
+        int num = InputUtils.readInt(scanner);
         
         if (num == 0) return;
         if (num < 1 || num > tables.length) {
@@ -86,7 +85,7 @@ public class WaiterMenuHandler implements MenuHandler {
             System.out.println("\n[0] Lõpeta  [M] Menüü  [V] Vaata  [X] Eemalda");
             System.out.println("Toote lisamiseks sisesta number ja kogus tühikuga (nt: 1 2)");            System.out.print("> ");
             String cmd = scanner.nextLine().toUpperCase();
-            
+
             switch (cmd) {
                 case "0":
                     if (order.getItems().isEmpty()) {
@@ -168,8 +167,7 @@ public class WaiterMenuHandler implements MenuHandler {
         }
         viewOrder(order);
         System.out.print("Eemalda number: ");
-        int idx = scanner.nextInt();
-        scanner.nextLine();
+        int idx = InputUtils.readInt(scanner);
         if (idx >= 1 && idx <= order.getItems().size()) {
             OrderItem removed = order.getItems().remove(idx - 1);
             System.out.println("Eemaldatud: " + removed.getMenuItem().getName());
@@ -201,8 +199,7 @@ public class WaiterMenuHandler implements MenuHandler {
         }
         
         System.out.print("\nVali laud (0 tagasi): ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
+        int num = InputUtils.readInt(scanner);
         if (num == 0) return;
         if (num >= 1 && num <= tables.length) {
             waiter.unbroneeriLaud(tables[num - 1]);
@@ -239,8 +236,7 @@ public class WaiterMenuHandler implements MenuHandler {
         }
 
         System.out.print("\nVali laud (0 tagasi): ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
+        int num = InputUtils.readInt(scanner);
 
         if (num == 0) return;
         if (num < 1 || num > tables.length) {
@@ -281,8 +277,7 @@ public class WaiterMenuHandler implements MenuHandler {
         System.out.println("0. Tagasi");
         System.out.print("\nVali tegevus: ");
 
-        int action = scanner.nextInt();
-        scanner.nextLine();
+        int action = InputUtils.readInt(scanner);
 
         switch (action) {
             // Kontrollib, et tellimus oleks valmis enne arve esitamist

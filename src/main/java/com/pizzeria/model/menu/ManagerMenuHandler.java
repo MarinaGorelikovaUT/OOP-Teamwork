@@ -63,8 +63,7 @@ public class ManagerMenuHandler implements MenuHandler {
             }
 
             System.out.print("\nVali laud (1-" + tables.length + "), 0 tagasi: ");
-            int num = scanner.nextInt();
-            scanner.nextLine();
+            int num = InputUtils.readInt(scanner);
 
             if (num == 0) return;
             if (num < 1 || num > tables.length) {
@@ -89,8 +88,8 @@ public class ManagerMenuHandler implements MenuHandler {
         int count = 0;
         while (count < 1 || count > table.getCapibility()) {
             System.out.print("Inimeste arv (max " + table.getCapibility() + "): ");
-            count = scanner.nextInt();
-            scanner.nextLine();
+            count = InputUtils.readInt(scanner);
+
             if (count < 1 || count > table.getCapibility()) {
                 System.out.println("Liiga palju külalisi! Laua mahutavus on " + table.getCapibility() + ". Proovi uuesti.\n");
             }
@@ -101,8 +100,7 @@ public class ManagerMenuHandler implements MenuHandler {
         System.out.println("1. Broneeri kohe (praegune aeg)");
         System.out.println("2. Vali aeg");
         System.out.print("Vali: ");
-        int timeChoice = scanner.nextInt();
-        scanner.nextLine();
+        int timeChoice = InputUtils.readInt(scanner);
 
         LocalDateTime broneeringAeg;
 
@@ -115,8 +113,7 @@ public class ManagerMenuHandler implements MenuHandler {
                 int aasta;
                 while (true) {
                     System.out.print("Kuupäev (aasta, 2024-2099): ");
-                    aasta = scanner.nextInt();
-                    scanner.nextLine();
+                    aasta = InputUtils.readInt(scanner);
                     if (aasta >= 2024 && aasta <= 2099) break;
                     System.out.println("Vale aasta! Sisesta vahemikus 2024-2099.\n");
                 }
@@ -125,8 +122,7 @@ public class ManagerMenuHandler implements MenuHandler {
                 int kuu;
                 while (true) {
                     System.out.print("Kuupäev (kuu, 1-12): ");
-                    kuu = scanner.nextInt();
-                    scanner.nextLine();
+                    kuu = InputUtils.readInt(scanner);
                     if (kuu >= 1 && kuu <= 12) break;
                     System.out.println("Vale kuu! Sisesta vahemikus 1-12.\n");
                 }
@@ -135,8 +131,7 @@ public class ManagerMenuHandler implements MenuHandler {
                 int paev;
                 while (true) {
                     System.out.print("Kuupäev (päev, 1-31): ");
-                    paev = scanner.nextInt();
-                    scanner.nextLine();
+                    paev = InputUtils.readInt(scanner);
                     if (paev >= 1 && paev <= 31) break;
                     System.out.println("Vale päev! Sisesta vahemikus 1-31.\n");
                 }
@@ -145,8 +140,7 @@ public class ManagerMenuHandler implements MenuHandler {
                 int tunnid;
                 while (true) {
                     System.out.print("Kellaaeg (tunnid, 0-23): ");
-                    tunnid = scanner.nextInt();
-                    scanner.nextLine();
+                    tunnid = InputUtils.readInt(scanner);
                     if (tunnid >= 0 && tunnid <= 23) break;
                     System.out.println("Vale tund! Sisesta vahemikus 0-23.\n");
                 }
@@ -155,8 +149,7 @@ public class ManagerMenuHandler implements MenuHandler {
                 int minutid;
                 while (true) {
                     System.out.print("Kellaaeg (minutid, 0-59): ");
-                    minutid = scanner.nextInt();
-                    scanner.nextLine();
+                    minutid = InputUtils.readInt(scanner);
                     if (minutid >= 0 && minutid <= 59) break;
                     System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
                 }
@@ -226,8 +219,7 @@ public class ManagerMenuHandler implements MenuHandler {
             return;
         }
         System.out.print("\nVali laud (0 tagasi): ");
-        int num = scanner.nextInt();
-        scanner.nextLine();
+        int num = InputUtils.readInt(scanner);
         if (num == 0) return;
         if (num >= 1 && num <= tables.length) {
             boolean ok = reservationService.cancelReservation(tables[num - 1]);

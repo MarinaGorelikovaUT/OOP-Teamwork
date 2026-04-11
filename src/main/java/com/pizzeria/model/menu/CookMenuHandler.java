@@ -51,8 +51,7 @@ public class CookMenuHandler implements MenuHandler {
         }
         
         System.out.print("\nSisesta tellimuse number, mille soovid lõpetada (0 tagasi): ");
-        int orderNum = scanner.nextInt();
-        scanner.nextLine();
+        int orderNum = InputUtils.readInt(scanner);
         
         if (orderNum == 0) return;
         

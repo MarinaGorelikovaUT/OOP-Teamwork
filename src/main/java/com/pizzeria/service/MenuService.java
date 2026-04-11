@@ -1,5 +1,6 @@
 package com.pizzeria.service;
 
+import com.pizzeria.model.InputUtils;
 import com.pizzeria.model.MenuItem;
 
 import java.util.ArrayList;
@@ -131,8 +132,8 @@ public class MenuService {
                             "0. Tagasi"
             );
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner);
+
             List<MenuItem> items = new ArrayList<>();
 
             switch (choice) {
