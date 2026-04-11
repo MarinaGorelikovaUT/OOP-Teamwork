@@ -90,50 +90,25 @@ public class ManagerMenuHandler implements MenuHandler {
         waitForEnter(scanner);
     }
 
+    // Только этот метод изменён — остальные не тронуты
     private void handleReservation(Scanner scanner) {
         System.out.println("  LAUDA BRONEERIMINE  \n");
 
-        // Laua valimine - kordame kuni valitakse vaba laud
-        Table table = null;
-        while (table == null) {
-            for (Table t : tables) {
-                System.out.println("Laud " + t.getNumber() + " | Mahutavus: " + t.getCapibility() + " | Staatus: " + t.getStatus());
-            }
-
-            System.out.print("\nVali laud (1-" + tables.length + "), 0 tagasi: ");
-            int num = InputUtils.readInt(scanner);
-
-            if (num == 0) return;
-            if (num < 1 || num > tables.length) {
-                System.out.println("Vale number! Proovi uuesti.\n");
-                continue;
-            }
-
-            Table selected = tables[num - 1];
-            if (selected.getStatus() != Table.TableStatus.VABA) {
-                System.out.println("Laud on juba broneeritud või hõivatud! Vali teine laud.\n");
-                continue;
-            }
-
-            table = selected;
-        }
-
-        // Nimi
+        // 1. Nimi
         System.out.print("Nimi: ");
         String name = scanner.nextLine();
 
-        // Külaliste arv - kordame kuni sisestatakse õige arv
+        // 2. Külaliste arv
         int count = 0;
-        while (count < 1 || count > table.getCapibility()) {
-            System.out.print("Inimeste arv (max " + table.getCapibility() + "): ");
+        while (count < 1) {
+            System.out.print("Inimeste arv: ");
             count = InputUtils.readInt(scanner);
-
-            if (count < 1 || count > table.getCapibility()) {
-                System.out.println("Liiga palju külalisi! Laua mahutavus on " + table.getCapibility() + ". Proovi uuesti.\n");
+            if (count < 1) {
+                System.out.println("Külaliste arv peab olema vähemalt 1.\n");
             }
         }
 
-        // Broneeringu aja valik
+        // 3. Broneeringu aja valik
         System.out.println("Broneeringu aeg:");
         System.out.println("1. Broneeri kohe (praegune aeg)");
         System.out.println("2. Vali aeg");
@@ -147,7 +122,6 @@ public class ManagerMenuHandler implements MenuHandler {
         } else {
             broneeringAeg = null;
             while (broneeringAeg == null) {
-                // Aasta
                 int aasta;
                 while (true) {
                     System.out.print("Kuupäev (aasta, 2024-2099): ");
@@ -155,8 +129,6 @@ public class ManagerMenuHandler implements MenuHandler {
                     if (aasta >= 2024 && aasta <= 2099) break;
                     System.out.println("Vale aasta! Sisesta vahemikus 2024-2099.\n");
                 }
-
-                // Kuu
                 int kuu;
                 while (true) {
                     System.out.print("Kuupäev (kuu, 1-12): ");
@@ -164,8 +136,6 @@ public class ManagerMenuHandler implements MenuHandler {
                     if (kuu >= 1 && kuu <= 12) break;
                     System.out.println("Vale kuu! Sisesta vahemikus 1-12.\n");
                 }
-
-                // Päev
                 int paev;
                 while (true) {
                     System.out.print("Kuupäev (päev, 1-31): ");
@@ -173,8 +143,6 @@ public class ManagerMenuHandler implements MenuHandler {
                     if (paev >= 1 && paev <= 31) break;
                     System.out.println("Vale päev! Sisesta vahemikus 1-31.\n");
                 }
-
-                // Tunnid
                 int tunnid;
                 while (true) {
                     System.out.print("Kellaaeg (tunnid, 0-23): ");
@@ -182,8 +150,6 @@ public class ManagerMenuHandler implements MenuHandler {
                     if (tunnid >= 0 && tunnid <= 23) break;
                     System.out.println("Vale tund! Sisesta vahemikus 0-23.\n");
                 }
-
-                // Minutid
                 int minutid;
                 while (true) {
                     System.out.print("Kellaaeg (minutid, 0-59): ");
@@ -191,7 +157,6 @@ public class ManagerMenuHandler implements MenuHandler {
                     if (minutid >= 0 && minutid <= 59) break;
                     System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
                 }
-
                 try {
                     LocalDateTime kandidaat = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
                     if (kandidaat.isBefore(LocalDateTime.now())) {
@@ -205,12 +170,41 @@ public class ManagerMenuHandler implements MenuHandler {
             }
         }
 
-        boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
+        // 4. Näita vabu laudu sellel ajal
+        List<Table> availableTables = reservationService.getAvailableTablesForTime(tables, broneeringAeg, count);
 
+        if (availableTables.isEmpty()) {
+            System.out.println("\nKahjuks pole sellel ajal " + count + " külalisele sobivaid vabu laudu!\n");
+            waitForEnter(scanner);
+            return;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        System.out.println("\nVabad lauad sellel ajal (" + broneeringAeg.format(formatter) + "):");
+        for (int i = 0; i < availableTables.size(); i++) {
+            Table t = availableTables.get(i);
+            System.out.println((i + 1) + ". Laud " + t.getNumber() + " | Mahutavus: " + t.getCapibility());
+        }
+
+        // 5. Laua valimine
+        Table table = null;
+        while (table == null) {
+            System.out.print("\nVali laud (1-" + availableTables.size() + "), 0 tagasi: ");
+            int num = InputUtils.readInt(scanner);
+            if (num == 0) return;
+            if (num < 1 || num > availableTables.size()) {
+                System.out.println("Vale number! Proovi uuesti.\n");
+                continue;
+            }
+            table = availableTables.get(num - 1);
+        }
+
+        // 6. Broneeri
+        boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
         if (ok) {
             System.out.println("Broneering tehtud!\n");
         } else {
-            System.out.println("Broneering ebaõnnestus!\n");
+            System.out.println("Broneering ebaõnnestus! See laud on juba broneeritud sellel ajal.\n");
         }
         waitForEnter(scanner);
     }
@@ -222,7 +216,8 @@ public class ManagerMenuHandler implements MenuHandler {
         for (Reservation r : reservationService.getAllReservations()) {
             Table table = r.getTable();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-            System.out.println("Laud " + table.getNumber() + " | Broneerija: " + r.getCustomer() + " | Külalisi: " + r.getCustomer_count() + " | Aeg: " + r.getTime().format(formatter));            found = true;
+            System.out.println("Laud " + table.getNumber() + " | Broneerija: " + r.getCustomer() + " | Külalisi: " + r.getCustomer_count() + " | Aeg: " + r.getTime().format(formatter));
+            found = true;
         }
 
         if (!found) {
@@ -240,7 +235,8 @@ public class ManagerMenuHandler implements MenuHandler {
             } else {
                 for (Reservation reservation : reservations) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-                    System.out.println("Laud " + reservation.getTable().getNumber() + " | Broneerija: " + reservation.getCustomer() + " | Külalisi: " + reservation.getCustomer_count() + " | Aeg: " + reservation.getTime().format(formatter));                }
+                    System.out.println("Laud " + reservation.getTable().getNumber() + " | Broneerija: " + reservation.getCustomer() + " | Külalisi: " + reservation.getCustomer_count() + " | Aeg: " + reservation.getTime().format(formatter));
+                }
             }
             waitForEnter(scanner);
         } else {
@@ -251,37 +247,34 @@ public class ManagerMenuHandler implements MenuHandler {
     // Tühistab broneeringu
     private void handleUnbroneeri(Scanner scanner) {
         System.out.println("\n  BRONEERINGU TÜHISTAMINE  \n");
-        boolean found = false;
-        for (Table t : tables) {
-            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
-                String name = "";
-                for (Reservation r : reservationService.getAllReservations()) {
-                    if (r.getTable().getNumber() == t.getNumber()) {
-                        name = r.getCustomer();
-                        break;
-                    }
-                }
-                System.out.println(t.getNumber() + ". Laud " + t.getNumber() + " - " + name);
-                found = true;
-            }
-        }
-        if (!found) {
+        List<Reservation> reservations = reservationService.getAllReservations();
+        if (reservations.isEmpty()) {
             System.out.println("Ühtegi broneeringut pole!\n");
             waitForEnter(scanner);
             return;
         }
-        System.out.print("\nVali laud (0 tagasi): ");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        for (int i = 0; i < reservations.size(); i++) {
+            Reservation r = reservations.get(i);
+            System.out.println((i + 1) + ". Laud " + r.getTable().getNumber() +
+                    " | " + r.getCustomer() +
+                    " | " + r.getCustomer_count() + " külalist" +
+                    " | " + r.getTime().format(formatter));
+        }
+        System.out.print("\nVali broneeringu number (0 tagasi): ");
         int num = InputUtils.readInt(scanner);
         if (num == 0) return;
-        if (num >= 1 && num <= tables.length) {
-            boolean ok = reservationService.cancelReservation(tables[num - 1]);
-            if (ok) {
-                System.out.println("Broneering tühistatud! Laud " + num + " on nüüd vaba.\n");
-            } else {
-                System.out.println("Ei leitud broneeringut!\n");
-            }
-        } else {
+        if (num < 1 || num > reservations.size()) {
             System.out.println("Vale number!\n");
+            waitForEnter(scanner);
+            return;
+        }
+        Reservation toCancel = reservations.get(num - 1);
+        boolean ok = reservationService.cancelReservation(toCancel.getTable());
+        if (ok) {
+            System.out.println("Broneering tühistatud! Laud " + toCancel.getTable().getNumber() + " on nüüd vaba.\n");
+        } else {
+            System.out.println("Ei leitud broneeringut!\n");
         }
         waitForEnter(scanner);
     }

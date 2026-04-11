@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.pizzeria.model.Table.TableStatus.BRONEERITUD;
+import static com.pizzeria.model.Table.TableStatus.VABA;
 
 public class ReservationService {
 
@@ -26,24 +27,41 @@ public class ReservationService {
 
     // Lisab broneeringu, kui laud on vaba, mahutavus piisav ja aeg pole võetud
     public boolean addReservation(Table table, String customer, int guestCount, LocalDateTime time) {
-        if (table.getStatus() == BRONEERITUD) {
-            return false;
+        for (Reservation r : reservations) {
+            if (r.getTable().equals(table) &&
+                    time.isBefore(r.getTime().plusHours(2)) &&
+                    r.getTime().isBefore(time.plusHours(2))) {
+                return false;
+            }
         }
         if (guestCount > table.getCapibility()) {
             return false;
         }
-        for (Reservation reservation : reservations) {
-            if (reservation.getTable().equals(table) && reservation.getTime().equals(time)) {
-                return false;
-            }
-        }
-
         Reservation reservation = new Reservation(customer, guestCount, table, time);
         reservations.add(reservation);
-        table.setStatus(BRONEERITUD);
         saveReservations();
-
         return true;
+    }
+
+    // Tagastab vabad lauad antud ajal ja külaliste arvuga
+    public List<Table> getAvailableTablesForTime(Table[] tables, LocalDateTime time, int guestCount) {
+        List<Table> available = new ArrayList<>();
+        for (Table table : tables) {
+            if (table.getCapibility() < guestCount) continue;
+            boolean isTaken = false;
+            for (Reservation r : reservations) {
+                if (r.getTable().equals(table) &&
+                        time.isBefore(r.getTime().plusHours(2)) &&
+                        r.getTime().isBefore(time.plusHours(2))) {
+                    isTaken = true;
+                    break;
+                }
+            }
+            if (!isTaken) {
+                available.add(table);
+            }
+        }
+        return available;
     }
 
     // Tagastab kõikide broneeringute nimekirja
@@ -51,13 +69,22 @@ public class ReservationService {
         return reservations;
     }
 
-
-
     public void saveReservations() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("reservations.ser"))) {
             oos.writeObject(reservations);
         } catch (IOException e) {
             System.out.println("Viga salvestamisel: " + e.getMessage());
+        }
+    }
+
+    public void updateTableStatuses(Table[] tables) {
+        for (Reservation r : reservations) {
+            if (!LocalDateTime.now().isBefore(r.getTime()) &&
+                    LocalDateTime.now().isBefore(r.getTime().plusHours(2))) {
+                r.getTable().setStatus(Table.TableStatus.BRONEERITUD);
+            } else {
+                r.getTable().setStatus(Table.TableStatus.VABA);
+            }
         }
     }
 
@@ -85,14 +112,14 @@ public class ReservationService {
         for (Reservation r : reservations) {
             if (r.getCustomer().equalsIgnoreCase(name))
                 result.add(r);
-        } return result;
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")
     public void loadReservations() {
         File file = new File("reservations.ser");
         if (!file.exists()) return;
-        
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             reservations = (List<Reservation>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
