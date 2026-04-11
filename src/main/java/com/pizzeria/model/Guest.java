@@ -1,5 +1,7 @@
 package com.pizzeria.model;
 
+import com.pizzeria.service.ReservationService;
+
 public class Guest extends User {
     
     public Guest(String name) {

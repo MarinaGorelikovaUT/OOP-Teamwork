@@ -1,5 +1,7 @@
 package com.pizzeria.model;
 
+import com.pizzeria.service.ReservationService;
+
 import java.util.List;
 
 public class Manager extends User {

@@ -3,6 +3,7 @@ package com.pizzeria.model;
 import com.pizzeria.service.MenuService;
 import com.pizzeria.service.OrderService;
 import com.pizzeria.model.menu.*;
+import com.pizzeria.service.ReservationService;
 
 import java.util.Scanner;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ public class CommandLineMenu {
 
     public void run() {
         System.out.println("Programm käivitatud!\n");
-        System.out.println("Salvestatud broneeringuid: " + getReservationCount() + "\n");
         
         MenuHandler currentHandler = handlers.get(currentRole);
         
@@ -53,12 +53,5 @@ public class CommandLineMenu {
                currentHandler.handleInput(choice, scanner);
            }
         }
-    }
-    
-    private int getReservationCount() {
-        if (handlers.containsKey(Role.MANAGER)) {
-            ManagerMenuHandler m = (ManagerMenuHandler) handlers.get(Role.MANAGER);
-        }
-        return 0;
     }
 }
