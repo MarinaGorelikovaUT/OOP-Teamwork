@@ -2,12 +2,11 @@
 // mvn exec:java -Dexec.mainClass="com.pizzeria.Main"
 
 package com.pizzeria;
+import com.pizzeria.model.*;
 import com.pizzeria.service.OrderService;
-import com.pizzeria.model.Table;
-import com.pizzeria.model.TableService;
 import com.pizzeria.model.ReservationService;
-import com.pizzeria.model.Role;
-import com.pizzeria.model.CommandLineMenu;
+import com.pizzeria.service.TableService;
+
 import java.util.Scanner;
 
 
@@ -31,8 +30,7 @@ public class Main {
             System.out.println("9. Välju programmist");
             System.out.print("Sinu valik: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner);
 
             if (choice == 9) {
                 System.out.println("Programm sulgub...");

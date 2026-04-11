@@ -1,4 +1,6 @@
-package com.pizzeria.model;
+package com.pizzeria.service;
+
+import com.pizzeria.model.Table;
 
 import java.util.ArrayList;
 import java.util.List;

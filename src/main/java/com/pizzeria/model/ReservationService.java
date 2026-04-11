@@ -76,6 +76,15 @@ public class ReservationService {
         return false;
     }
 
+    // Leiab broneeringud nime järgi
+    public List<Reservation> searchByName(String name) {
+        List<Reservation> result = new ArrayList<>();
+        for (Reservation r : reservations) {
+            if (r.getCustomer().equalsIgnoreCase(name))
+                result.add(r);
+        } return result;
+    }
+
     @SuppressWarnings("unchecked")
     public void loadReservations() {
         File file = new File("reservations.ser");

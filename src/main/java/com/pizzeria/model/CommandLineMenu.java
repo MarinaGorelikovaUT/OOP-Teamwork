@@ -3,6 +3,7 @@ package com.pizzeria.model;
 import com.pizzeria.service.MenuService;
 import com.pizzeria.service.OrderService;
 import com.pizzeria.model.menu.*;
+
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,20 +44,14 @@ public class CommandLineMenu {
             System.out.println("0. Logi välja");
             System.out.print("\nVali tegevus: ");
             
-            if (scanner.hasNextInt()) {
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+           int choice = InputUtils.readInt(scanner);
                 
-                if (choice == 0) {
-                    running = false;
-                    System.out.println("\nLogitakse välja...");
-                } else {
-                    currentHandler.handleInput(choice, scanner);
-                }
-            } else {
-                System.out.println("Palun sisesta number!\n");
-                scanner.nextLine();
-            }
+           if (choice == 0) {
+               running = false;
+               System.out.println("\nLogitakse välja...");
+           } else {
+               currentHandler.handleInput(choice, scanner);
+           }
         }
     }
     

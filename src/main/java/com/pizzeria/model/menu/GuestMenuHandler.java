@@ -61,8 +61,7 @@ public class GuestMenuHandler implements MenuHandler {
             viewAllTables();
 
             System.out.print("Vali laud (1-" + tables.length + "), 0 tagasi: ");
-            int num = scanner.nextInt();
-            scanner.nextLine();
+            int num = InputUtils.readInt(scanner);
 
             if (num == 0) return;
             if (num < 1 || num > tables.length) {
@@ -87,8 +86,7 @@ public class GuestMenuHandler implements MenuHandler {
         int count = 0;
         while (count < 1 || count > table.getCapibility()) {
             System.out.print("Sisesta külaliste arv (max " + table.getCapibility() + "): ");
-            count = scanner.nextInt();
-            scanner.nextLine();
+            count = InputUtils.readInt(scanner);
             if (count < 1 || count > table.getCapibility()) {
                 System.out.println("Liiga palju külalisi! Laua mahutavus on " + table.getCapibility() + ". Proovi uuesti.\n");
             }
@@ -102,8 +100,7 @@ public class GuestMenuHandler implements MenuHandler {
             int aasta = 0;
             while (aasta < 2026 || aasta > 2099) {
                 System.out.print("Kuupäev (aasta): ");
-                aasta = scanner.nextInt();
-                scanner.nextLine();
+                aasta = InputUtils.readInt(scanner);
                 if (aasta < 2026 || aasta > 2099)
                     System.out.println("Vale aasta! Sisesta vahemikus 2026-2099.\n");
             }
@@ -112,8 +109,7 @@ public class GuestMenuHandler implements MenuHandler {
             int kuu = 0;
             while (kuu < 1 || kuu > 12) {
                 System.out.print("Kuupäev (kuu): ");
-                kuu = scanner.nextInt();
-                scanner.nextLine();
+                kuu = InputUtils.readInt(scanner);
                 if (kuu < 1 || kuu > 12)
                     System.out.println("Vale kuu! Sisesta vahemikus 1-12.\n");
             }
@@ -122,8 +118,7 @@ public class GuestMenuHandler implements MenuHandler {
             int paev = 0;
             while (paev < 1 || paev > 31) {
                 System.out.print("Kuupäev (päev): ");
-                paev = scanner.nextInt();
-                scanner.nextLine();
+                paev = InputUtils.readInt(scanner);
                 if (paev < 1 || paev > 31)
                     System.out.println("Vale päev! Sisesta vahemikus 1-31.\n");
             }
@@ -132,8 +127,7 @@ public class GuestMenuHandler implements MenuHandler {
             int tunnid = -1;
             while (tunnid < 0 || tunnid > 23) {
                 System.out.print("Kellaaeg (tunnid): ");
-                tunnid = scanner.nextInt();
-                scanner.nextLine();
+                tunnid = InputUtils.readInt(scanner);
                 if (tunnid < 0 || tunnid > 23)
                     System.out.println("Vale tund! Sisesta vahemikus 0-23.\n");
             }
@@ -142,8 +136,7 @@ public class GuestMenuHandler implements MenuHandler {
             int minutid = -1;
             while (minutid < 0 || minutid > 59) {
                 System.out.print("Kellaaeg (minutid): ");
-                minutid = scanner.nextInt();
-                scanner.nextLine();
+                minutid = InputUtils.readInt(scanner);
                 if (minutid < 0 || minutid > 59)
                     System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
             }
