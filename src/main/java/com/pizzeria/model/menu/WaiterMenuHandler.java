@@ -152,11 +152,11 @@ public class WaiterMenuHandler implements MenuHandler {
             for (int i = 0; i < order.getItems().size(); i++) {
                 OrderItem item = order.getItems().get(i);
                 double price = item.getMenuItem().getPrice() * item.getQuantity();
-                System.out.println((i+1) + ". " + item.getMenuItem().getName() + " x" + item.getQuantity() + " = " + String.format("%.2f", price) + "€");
+                System.out.println((i+1) + ". " + item.getMenuItem().getName() + " x" + item.getQuantity() + " = " + String.format("%.2f", price) + " €");
                 total += price;
             }
             System.out.println("────────────────────────");
-            System.out.println("Kokku: " + String.format("%.2f", total) + "€");
+            System.out.println("Kokku: " + String.format("%.2f", total) + " €");
         }
         System.out.println();
     }
@@ -289,7 +289,7 @@ public class WaiterMenuHandler implements MenuHandler {
                     break;
                 }
                 System.out.println("Arve:");
-                System.out.println("Kogusumma: " + String.format("%.2f", total) + "€");                System.out.print("\nKlient maksis? (J/E): ");
+                System.out.println("Kogusumma: " + String.format("%.2f", total) + " €");                System.out.print("\nKlient maksis? (J/E): ");
                 String confirm = scanner.nextLine();
                 if (confirm.equalsIgnoreCase("J")) {
                     orderService.closeOrder(tableOrder);

@@ -23,7 +23,7 @@ public class CommandLineMenu {
         MenuService menuService = new MenuService();
         
         this.handlers = new HashMap<>();
-        handlers.put(Role.MANAGER, new ManagerMenuHandler(tables, reservationService, menuService));
+        handlers.put(Role.MANAGER, new ManagerMenuHandler(tables, reservationService, menuService, orderService));
         handlers.put(Role.WAITER, new WaiterMenuHandler(tables, reservationService, menuService, orderService));
         handlers.put(Role.COOK, new CookMenuHandler(orderService));
         handlers.put(Role.GUEST, new GuestMenuHandler(tables, reservationService, menuService));
