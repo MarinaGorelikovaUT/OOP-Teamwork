@@ -2,8 +2,10 @@ package com.pizzeria.model.menu;
 
 import com.pizzeria.model.*;
 import com.pizzeria.service.MenuService;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class ManagerMenuHandler implements MenuHandler {
@@ -174,7 +176,6 @@ public class ManagerMenuHandler implements MenuHandler {
         } else {
             System.out.println("Broneering ebaõnnestus!\n");
         }
-
         waitForEnter(scanner);
     }
 
@@ -193,7 +194,22 @@ public class ManagerMenuHandler implements MenuHandler {
         }
         System.out.println("Broneeringuid kokku: " + reservationService.getAllReservations().size() + "\n");
 
-        waitForEnter(scanner);
+        System.out.print("Sisesta nimi otsimiseks või vajuta Enter tagasi: ");
+        String name = scanner.nextLine();
+
+        if (!name.isEmpty()) {
+            List<Reservation> reservations = reservationService.searchByName(name);
+            if (reservations.isEmpty()) {
+                System.out.println("Broneeringut ei leitud!\n");
+            } else {
+                for (Reservation reservation : reservations) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+                    System.out.println("Laud " + reservation.getTable().getNumber() + " | Broneerija: " + reservation.getCustomer() + " | Külalisi: " + reservation.getCustomer_count() + " | Aeg: " + reservation.getTime().format(formatter));                }
+            }
+            waitForEnter(scanner);
+        } else {
+            waitForEnter(scanner);
+        }
     }
 
     // Tühistab broneeringu
