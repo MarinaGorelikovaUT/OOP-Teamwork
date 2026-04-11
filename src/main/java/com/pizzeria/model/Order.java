@@ -44,11 +44,6 @@ public class Order {
         return status;
     }
 
-    // Tagastab tellimuse loomise aja LocalDateTime formaadis
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
-    }
-
     // Tagastab tellimuse loomise aja kujul pp.kk.aaaa tt:mm
     public String getFormattedTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

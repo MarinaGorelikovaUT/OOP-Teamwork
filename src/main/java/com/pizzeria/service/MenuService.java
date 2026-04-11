@@ -74,11 +74,6 @@ public class MenuService {
         menu.add(new MenuItem("Jäätis", "3 palli: shokolaadi, vanilje, maasika", 4.90, MenuItem.Category.DESSERT));
     }
 
-    // Tagastab kõik menüü tooted
-    public List<MenuItem> getAllItems() {
-        return menu;
-    }
-
     // Tagastab tooted valitud kategooria järgi
     public List<MenuItem> getByCategory(MenuItem.Category category) {
         ArrayList<MenuItem> result = new ArrayList<>();
@@ -101,15 +96,6 @@ public class MenuService {
             System.out.println();
             i++;
         }
-    }
-
-    // Otsib toodet nime järgi
-    public MenuItem getByName(String name) {
-        for (MenuItem menuItem : menu) {
-            if (menuItem.getName().equalsIgnoreCase(name))
-                return menuItem;
-        }
-        return null;
     }
 
     // Otsib toodet numbri järgi

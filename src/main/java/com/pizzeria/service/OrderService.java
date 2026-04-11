@@ -48,9 +48,11 @@ public class OrderService {
     public List<Order> getActiveOrders() {
         ArrayList<Order> activeOrders = new ArrayList<>();
         for (Order order : orders) {
-            if (order.getStatus() == NEW || order.getStatus() == IN_PROGRESS)
-            activeOrders.add(order);
-        } return activeOrders;
+            if (order.getStatus() == NEW || order.getStatus() == IN_PROGRESS) {
+                activeOrders.add(order);
+            }
+        }
+        return activeOrders;
     }
 
     // Sulgeb tellimuse, märgib staatuseks PAID ja eemaldab tellimuste nimekirjast

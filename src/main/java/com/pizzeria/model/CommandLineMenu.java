@@ -31,7 +31,6 @@ public class CommandLineMenu {
 
     public void run() {
         System.out.println("Programm käivitatud!\n");
-        System.out.println("Salvestatud broneeringuid: " + getReservationCount() + "\n");
         
         MenuHandler currentHandler = handlers.get(currentRole);
         
@@ -53,12 +52,5 @@ public class CommandLineMenu {
                currentHandler.handleInput(choice, scanner);
            }
         }
-    }
-    
-    private int getReservationCount() {
-        if (handlers.containsKey(Role.MANAGER)) {
-            ManagerMenuHandler m = (ManagerMenuHandler) handlers.get(Role.MANAGER);
-        }
-        return 0;
     }
 }
