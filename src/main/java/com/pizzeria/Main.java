@@ -19,6 +19,7 @@ public class Main {
         ReservationService reservationService = new ReservationService();
         reservationService.loadReservations();
         OrderService orderService = new OrderService();
+        orderService.loadOrders(); // load saved orders from previous session
 
         while (true) {
             System.out.println("  ---PIZZERIA SÜSTEEM---   \n");

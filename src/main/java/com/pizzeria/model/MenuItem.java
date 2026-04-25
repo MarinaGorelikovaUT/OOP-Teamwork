@@ -1,9 +1,13 @@
 package com.pizzeria.model;
+import java.io.Serializable;
 
 /**
  * Menüü element - pizzeria toode koos nime, kirjelduse, hinna ja kategooriaga
  */
-public class MenuItem {
+public class MenuItem implements Serializable {
+    private static final long serialVersionUID = 1L;
+    // Версионный ID для сериализации - гарантирует, что сохранённый файл соответствует этому классу
+    // Versioonitunnus serialiseerimiseks - tagab, et salvestatud fail vastab sellele klassile
     // Toote kategooria (pitsa, lisand, jook, magustoit)
     public enum Category {
         PIZZA, SIDE, DRINK, DESSERT

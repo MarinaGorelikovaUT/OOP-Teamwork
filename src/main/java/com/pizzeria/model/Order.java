@@ -5,10 +5,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.Serializable;
+
 /**
  * Tellimus - sisaldab tellimuse infot, staatust ja tellitud tooteid
  */
-public class Order {
+public class Order  implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+
     // Tellimuse võimalikud staatused
     public enum OrderStatus {
         NEW, IN_PROGRESS, READY, DELIVERED, PAID
@@ -75,5 +81,13 @@ public class Order {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-        return "Tellimus #" + getOrderNumber() + " | Laud " + tableNumber + " | " + status + " | " + createdTime.format(formatter);}
+        return "Tellimus #" + getOrderNumber() + " | Laud " + tableNumber + " | " + status + " | " + createdTime.format(formatter);
+    }
+
+
+    public static void setCounter(int value) {
+        counter = value;
+    }
+
+
 }
