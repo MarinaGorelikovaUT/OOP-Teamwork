@@ -1,6 +1,3 @@
-//selleks et kaivitada
-// mvn exec:java -Dexec.mainClass="com.pizzeria.Main"
-
 package com.pizzeria;
 import com.pizzeria.model.*;
 import com.pizzeria.service.OrderService;
@@ -20,6 +17,16 @@ public class Main {
         reservationService.loadReservations();
         OrderService orderService = new OrderService();
         orderService.loadOrders(); // load saved orders from previous session/ save orders
+
+        // Taasta laua staatus aktiivsete tellimuste põhjal
+        for (Order order : orderService.getAllOrders()) {
+            for (Table table : tables) {
+                if (table.getNumber() == order.getTableNumber()) {
+                    table.setStatus(Table.TableStatus.HOIVATUD);
+                    break;
+                }
+            }
+        }
 
         while (true) {
             System.out.println("  ---PIZZERIA SÜSTEEM---   \n");
