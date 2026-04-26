@@ -35,6 +35,7 @@ public class ManagerMenuHandler implements MenuHandler {
         System.out.println("4. Vaata menüüd");
         System.out.println("5. Tühista broneering");
         System.out.println("6. Vaata kõiki tellimusi");
+        System.out.println("7. Vaata tellimuste ajalugu");
     }
 
     @Override
@@ -58,6 +59,9 @@ public class ManagerMenuHandler implements MenuHandler {
                 break;
             case 6:
                 viewAllOrders(scanner);
+                break;
+            case 7:
+                viewAllClosedOrders(scanner);
                 break;
             default:
                 System.out.println("Vale valik!\n");
@@ -90,7 +94,32 @@ public class ManagerMenuHandler implements MenuHandler {
         waitForEnter(scanner);
     }
 
-    // Только этот метод изменён — остальные не тронуты
+    // Kuvab kõik suletud tellimused
+    private void viewAllClosedOrders(Scanner scanner) {
+        System.out.println("\n  TELLIMUSTE AJALUGU  \n");
+        if (orderService.getClosedOrders().isEmpty()) {
+            System.out.println("Ühtegi tellimust pole!\n");
+            waitForEnter(scanner);
+            return;
+        }
+        for (Order order : orderService.getClosedOrders()) {
+            System.out.println("----------------------------------------");
+            System.out.println("Tellimus nr: " + order.getOrderNumber());
+            System.out.println("Laud: " + order.getTableNumber());
+            System.out.println("Staatus: " + order.getStatus());
+            System.out.println("Aeg: " + order.getFormattedTime());
+            System.out.println("Tooted:");
+            for (OrderItem item : order.getItems()) {
+                System.out.println("  - " + item.getMenuItem().getName() +
+                        " x" + item.getQuantity() +
+                        " = " + String.format("%.2f", item.getTotalPrice()) + " €");
+            }
+            System.out.printf("Kogusumma: %.2f €%n", order.getTotalPrice());
+            System.out.println("----------------------------------------\n");
+        }
+        waitForEnter(scanner);
+    }
+
     private void handleReservation(Scanner scanner) {
         System.out.println("  LAUDA BRONEERIMINE  \n");
 
@@ -143,19 +172,22 @@ public class ManagerMenuHandler implements MenuHandler {
                     if (paev >= 1 && paev <= 31) break;
                     System.out.println("Vale päev! Sisesta vahemikus 1-31.\n");
                 }
-                int tunnid;
-                while (true) {
-                    System.out.print("Kellaaeg (tunnid, 0-23): ");
+                int tunnid = -1;
+                while (tunnid < 10 || tunnid > 20) {
+                    System.out.print("Kellaaeg (tunnid, 10-20): ");
                     tunnid = InputUtils.readInt(scanner);
-                    if (tunnid >= 0 && tunnid <= 23) break;
-                    System.out.println("Vale tund! Sisesta vahemikus 0-23.\n");
+                    if (tunnid < 10 || tunnid > 20)
+                        System.out.println("Vale tund! Restoran töötab 10:00-22:00, viimane broneering on kell 20:00.\n");
                 }
-                int minutid;
-                while (true) {
-                    System.out.print("Kellaaeg (minutid, 0-59): ");
+                int minutid = -1;
+                while (minutid < 0 || minutid > 59 || (tunnid == 20 && minutid > 0)) {
+                    System.out.print("Kellaaeg (minutid): ");
                     minutid = InputUtils.readInt(scanner);
-                    if (minutid >= 0 && minutid <= 59) break;
-                    System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
+                    if (tunnid == 20 && minutid > 0) {
+                        System.out.println("Viimane broneering on kell 20:00! Minutid peavad olema 0.\n");
+                    } else if (minutid < 0 || minutid > 59) {
+                        System.out.println("Vale minut! Sisesta vahemikus 0-59.\n");
+                    }
                 }
                 try {
                     LocalDateTime kandidaat = LocalDateTime.of(aasta, kuu, paev, tunnid, minutid);
