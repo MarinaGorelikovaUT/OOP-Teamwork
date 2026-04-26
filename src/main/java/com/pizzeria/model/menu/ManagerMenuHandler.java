@@ -288,4 +288,5 @@ public class ManagerMenuHandler implements MenuHandler {
     public String getRoleName() {
         return "MANAGER";
     }
+    //
 }

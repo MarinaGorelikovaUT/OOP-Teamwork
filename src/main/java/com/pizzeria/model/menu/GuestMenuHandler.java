@@ -186,6 +186,7 @@ public class GuestMenuHandler implements MenuHandler {
         waitForEnter(scanner);
     }
 
+    //
     private void waitForEnter(Scanner scanner) {
         System.out.println("\nVajuta Enter jätkamiseks...");
         scanner.nextLine();
