@@ -14,6 +14,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+
         TableService tableService = new TableService();
         Table[] tables = tableService.getAllTables().toArray(new Table[0]);
         ReservationService reservationService = new ReservationService();
