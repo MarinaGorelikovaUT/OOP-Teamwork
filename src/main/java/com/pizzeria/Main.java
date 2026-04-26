@@ -8,11 +8,13 @@ import com.pizzeria.service.ReservationService;
 import com.pizzeria.service.TableService;
 
 import java.util.Scanner;
+//
 
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
 
         TableService tableService = new TableService();
         Table[] tables = tableService.getAllTables().toArray(new Table[0]);

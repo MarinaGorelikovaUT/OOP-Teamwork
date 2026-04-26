@@ -19,7 +19,8 @@ public class CookMenuHandler implements MenuHandler {
         System.out.println("1. Vaata aktiivseid tellimusi");
         System.out.println("2. Lõpeta tellimus (märgi valmis)");
     }
-    
+
+    //
     @Override
     public void handleInput(int choice, Scanner scanner) {
         switch (choice) {

@@ -6,4 +6,5 @@ public interface MenuHandler {
     void displayMenu();
     void handleInput(int choice, Scanner scanner);
     String getRoleName();
+    //
 }

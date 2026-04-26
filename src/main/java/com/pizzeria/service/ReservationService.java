@@ -78,6 +78,9 @@ public class ReservationService {
     }
 
     public void updateTableStatuses(Table[] tables) {
+        // Remove reservations that ended more than 2 hours ago
+        reservations.removeIf(r -> LocalDateTime.now().isAfter(r.getTime().plusHours(2)));
+        saveReservations();
         for (Reservation r : reservations) {
             if (!LocalDateTime.now().isBefore(r.getTime()) &&
                     LocalDateTime.now().isBefore(r.getTime().plusHours(2))) {
@@ -86,6 +89,8 @@ public class ReservationService {
                 r.getTable().setStatus(Table.TableStatus.VABA);
             }
         }
+
+
     }
 
     // Tühistab broneeringu

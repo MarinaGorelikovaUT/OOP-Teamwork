@@ -65,4 +65,6 @@ public class Cook extends User {
             System.out.println("Tellimust nr " + orderNumber + " ei leitud!\n");
         }
     }
+
+    //
 }
