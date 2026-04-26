@@ -1,6 +1,3 @@
-//selleks et kaivitada
-// mvn exec:java -Dexec.mainClass="com.pizzeria.Main"
-
 package com.pizzeria;
 import com.pizzeria.model.*;
 import com.pizzeria.service.OrderService;
@@ -22,6 +19,16 @@ public class Main {
         reservationService.loadReservations();
         OrderService orderService = new OrderService();
         orderService.loadOrders(); // load saved orders from previous session/ save orders
+
+        // Taasta laua staatus aktiivsete tellimuste põhjal
+        for (Order order : orderService.getAllOrders()) {
+            for (Table table : tables) {
+                if (table.getNumber() == order.getTableNumber()) {
+                    table.setStatus(Table.TableStatus.HOIVATUD);
+                    break;
+                }
+            }
+        }
 
         while (true) {
             System.out.println("  ---PIZZERIA SÜSTEEM---   \n");
@@ -60,8 +67,6 @@ public class Main {
                     System.out.println("Vale valik! Proovi uuesti.\n");
                     continue;
             }
-
-            System.out.println("\nTere, " + role + "! Programm käivitub...\n");
             reservationService.updateTableStatuses(tables);
             CommandLineMenu menu = new CommandLineMenu(role, tables, reservationService, orderService);
             menu.run();
