@@ -58,8 +58,6 @@ public class Main {
                     System.out.println("Vale valik! Proovi uuesti.\n");
                     continue;
             }
-
-            System.out.println("\nTere, " + role + "! Programm käivitub...\n");
             reservationService.updateTableStatuses(tables);
             CommandLineMenu menu = new CommandLineMenu(role, tables, reservationService, orderService);
             menu.run();
