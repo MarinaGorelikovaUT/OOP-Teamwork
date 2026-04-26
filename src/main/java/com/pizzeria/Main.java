@@ -19,6 +19,7 @@ public class Main {
         ReservationService reservationService = new ReservationService();
         reservationService.loadReservations();
         OrderService orderService = new OrderService();
+        orderService.loadOrders(); // load saved orders from previous session/ save orders
 
         while (true) {
             System.out.println("  ---PIZZERIA SÜSTEEM---   \n");
@@ -39,6 +40,7 @@ public class Main {
 
             Role role = null;
 
+
             switch (choice) {
                 case 1:
                     role = Role.MANAGER;
@@ -58,7 +60,7 @@ public class Main {
             }
 
             System.out.println("\nTere, " + role + "! Programm käivitub...\n");
-
+            reservationService.updateTableStatuses(tables);
             CommandLineMenu menu = new CommandLineMenu(role, tables, reservationService, orderService);
             menu.run();
 
