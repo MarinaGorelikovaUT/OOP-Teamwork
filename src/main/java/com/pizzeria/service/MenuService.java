@@ -148,11 +148,10 @@ public class MenuService {
                     return;
             }
 
-            int i = 1;
             for (MenuItem menuItem : items) {
-                System.out.println(i + ". " + menuItem);
+                int globalIndex = menu.indexOf(menuItem) + 1;
+                System.out.println(globalIndex + ". " + menuItem);
                 System.out.println();
-                i++;
             }
         }
     }
