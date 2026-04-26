@@ -135,6 +135,7 @@ public class WaiterMenuHandler implements MenuHandler {
         
         if (scanner.nextLine().toUpperCase().equals("J")) {
             waiter.takeOrder(table, orderService);
+            orderService.updateStatus(order, Order.OrderStatus.IN_PROGRESS);
             System.out.println("Tellimus nr " + order.getOrderNumber() + " saadetud kokale!");
         } else {
             System.out.println("Tellimus tühistatud.");
