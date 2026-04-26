@@ -150,15 +150,15 @@ public class GuestMenuHandler implements MenuHandler {
             return;
         }
 
-        System.out.println("\nVabad lauad sellel ajal:");
+        /*System.out.println("\nVabad lauad sellel ajal:");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         for (int i = 0; i < availableTables.size(); i++) {
             Table t = availableTables.get(i);
             System.out.println((i + 1) + ". Laud " + t.getNumber() + " | Mahutavus: " + t.getCapibility());
-        }
+        }*/
 
         // 6. Laua valimine
-        Table table = null;
+        /*Table table = null;
         while (table == null) {
             System.out.print("\nVali laud (1-" + availableTables.size() + "), 0 tagasi: ");
             int num = InputUtils.readInt(scanner);
@@ -168,7 +168,11 @@ public class GuestMenuHandler implements MenuHandler {
                 continue;
             }
             table = availableTables.get(num - 1);
-        }
+        }*/
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        // 6. Automatically pick the first available table
+        Table table = availableTables.get(0);
+
 
         // 7. Broneeri
         boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
