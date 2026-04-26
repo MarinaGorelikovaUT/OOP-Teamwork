@@ -187,6 +187,8 @@ NEW → IN_PROGRESS → READY → PAID
 
 ## Etapi 2 kokkuvõte
 
+Teises etapis parandasime kõik esimeses etapis teadaolevad vead ning lisasime kõik planeeritud funktsionaalsused:
+
 ### Denis — broneeringud ja tellimuste salvestamine
 
 - Muutis broneerimise loogikat `GuestMenuHandler`-is ja `ManagerMenuHandler`-is — nüüd küsib programm esmalt nime, laua tüüpi, külaliste arvu ja aega, ning alles seejärel näitab vabu laudu just sellel ajal
