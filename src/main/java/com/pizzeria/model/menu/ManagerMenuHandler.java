@@ -35,6 +35,7 @@ public class ManagerMenuHandler implements MenuHandler {
         System.out.println("4. Vaata menüüd");
         System.out.println("5. Tühista broneering");
         System.out.println("6. Vaata kõiki tellimusi");
+        System.out.println("7. Vaata tellimuste ajalugu");
     }
 
     @Override
@@ -59,6 +60,9 @@ public class ManagerMenuHandler implements MenuHandler {
             case 6:
                 viewAllOrders(scanner);
                 break;
+            case 7:
+                viewAllClosedOrders(scanner);
+                break;
             default:
                 System.out.println("Vale valik!\n");
         }
@@ -73,6 +77,32 @@ public class ManagerMenuHandler implements MenuHandler {
             return;
         }
         for (Order order : orderService.getAllOrders()) {
+            System.out.println("----------------------------------------");
+            System.out.println("Tellimus nr: " + order.getOrderNumber());
+            System.out.println("Laud: " + order.getTableNumber());
+            System.out.println("Staatus: " + order.getStatus());
+            System.out.println("Aeg: " + order.getFormattedTime());
+            System.out.println("Tooted:");
+            for (OrderItem item : order.getItems()) {
+                System.out.println("  - " + item.getMenuItem().getName() +
+                        " x" + item.getQuantity() +
+                        " = " + String.format("%.2f", item.getTotalPrice()) + " €");
+            }
+            System.out.printf("Kogusumma: %.2f €%n", order.getTotalPrice());
+            System.out.println("----------------------------------------\n");
+        }
+        waitForEnter(scanner);
+    }
+
+    // Kuvab kõik suletud tellimused
+    private void viewAllClosedOrders(Scanner scanner) {
+        System.out.println("\n  TELLIMUSTE AJALUGU  \n");
+        if (orderService.getClosedOrders().isEmpty()) {
+            System.out.println("Ühtegi tellimust pole!\n");
+            waitForEnter(scanner);
+            return;
+        }
+        for (Order order : orderService.getClosedOrders()) {
             System.out.println("----------------------------------------");
             System.out.println("Tellimus nr: " + order.getOrderNumber());
             System.out.println("Laud: " + order.getTableNumber());

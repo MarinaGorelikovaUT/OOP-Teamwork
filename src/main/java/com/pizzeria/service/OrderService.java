@@ -17,9 +17,8 @@ import static com.pizzeria.model.Order.OrderStatus.*;
 public class OrderService {
     // Kõik tellimused
     private List<Order> orders;
+    private List<Order> closedOrders = new ArrayList<>();
 
-
-    // File where orders are saved between restarts
     // Fail, kuhu tellimused salvestatakse programmide taaskäivituste vahel
     private static final String SAVE_FILE = "orders.ser";
 
@@ -65,25 +64,29 @@ public class OrderService {
         return activeOrders;
     }
 
+    // Tagastab suletud tellimused
+    public List<Order> getClosedOrders() {
+        return closedOrders;
+    }
+
     // Sulgeb tellimuse, märgib staatuseks PAID ja eemaldab tellimuste nimekirjast
     public void closeOrder(Order order) {
         order.setStatus(Order.OrderStatus.PAID);
         orders.remove(order);
+        closedOrders.add(order);
         saveOrders();
     }
 
-    // Saves all orders to disk using Java serialization
 // Salvestab kõik tellimused kettale Java serialiseerimise abil
     public void saveOrders() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {
             oos.writeObject(orders);
+            oos.writeObject(closedOrders);
         } catch (IOException e) {
             System.out.println("Viga tellimuste salvestamisel: " + e.getMessage());
         }
     }
 
-    // Loads orders from disk on program startup
-// Also restores the order number counter to avoid duplicate numbers
 // Laadib tellimused kettalt programmi käivitamisel
 // Taastab ka tellimuse numbri loenduri, et vältida duplikaate
     @SuppressWarnings("unchecked")
@@ -93,11 +96,17 @@ public class OrderService {
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             orders = (List<Order>) ois.readObject();
+            closedOrders = (List<Order>) ois.readObject();
 
-            // Find the highest order number and set counter above it
-            // so new orders never get the same number as existing ones
+            // Otsib kõrgeima tellimuse numbri nii aktiivsete kui ka suletud tellimuste hulgast,
+            // et vältida duplikaate pärast programmi taaskäivitamist
             int maxNumber = 0;
             for (Order o : orders) {
+                if (o.getOrderNumber() > maxNumber) {
+                    maxNumber = o.getOrderNumber();
+                }
+            }
+            for (Order o : closedOrders) {
                 if (o.getOrderNumber() > maxNumber) {
                     maxNumber = o.getOrderNumber();
                 }
