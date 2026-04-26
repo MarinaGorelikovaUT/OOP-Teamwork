@@ -1,9 +1,15 @@
 package com.pizzeria.model;
+import java.io.Serializable;
 
 /**
  * Tellimuse üksus - üks toode tellimusest koos kogusega
  */
-public class OrderItem {
+public class OrderItem implements Serializable {
+    private static final long serialVersionUID = 1L;
+    //гарантирует, что сохранённый файл соответствует этому классу
+
+
+
     // Menüü element, mida telliti ja kogus
     private MenuItem menuItem;
     private int quantity;
