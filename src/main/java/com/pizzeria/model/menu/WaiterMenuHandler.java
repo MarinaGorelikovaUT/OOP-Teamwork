@@ -13,7 +13,7 @@ public class WaiterMenuHandler implements MenuHandler {
     private ReservationService reservationService;
     private MenuService menuService;
     private OrderService orderService;
-    
+
     public WaiterMenuHandler(Table[] tables, ReservationService reservationService, MenuService menuService, OrderService orderService) {
         this.waiter = new Waiter("Juuri", reservationService);
         this.tables = tables;
@@ -22,7 +22,7 @@ public class WaiterMenuHandler implements MenuHandler {
         this.orderService = orderService;
     }
     //
-    
+
     @Override
     public void displayMenu() {
         System.out.println("1. Võta tellimus");
@@ -30,7 +30,7 @@ public class WaiterMenuHandler implements MenuHandler {
         System.out.println("3. Vaata menüüd");
         System.out.println("4. Teeninda lauda");
     }
-    
+
     @Override
     public void handleInput(int choice, Scanner scanner) {
         switch (choice) {
@@ -51,8 +51,14 @@ public class WaiterMenuHandler implements MenuHandler {
                 System.out.println("Vale valik!\n");
         }
     }
-    
+
     private void handleOrder(Scanner scanner) {
+        System.out.println("\n  TELLIMUSE VÕTMINE  \n");
+        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
+        System.out.print("Vajuta Enter alustamiseks: ");
+        String startInput = scanner.nextLine();
+        if (startInput.trim().equals("0")) return;
+
         // 1. Vali laud
         System.out.println("\n=== LAUAD ===");
         for (Table t : tables) {
@@ -66,22 +72,22 @@ public class WaiterMenuHandler implements MenuHandler {
             }
             System.out.println(info);
         }
-        
+
         System.out.print("\nVali laud (0 tagasi): ");
         int num = InputUtils.readInt(scanner);
-        
+
         if (num == 0) return;
         if (num < 1 || num > tables.length) {
             System.out.println("Vale number!\n");
             return;
         }
-        
+
         Table table = tables[num - 1];
-        
+
         // 2. Loo tellimus
         Order order = orderService.createOrder(table.getNumber());
         System.out.println("\nTellimus nr " + order.getOrderNumber() + " lauale " + table.getNumber());
-        
+
         // 3. Lisa tooteid
         boolean done = false;
         while (!done) {
@@ -128,12 +134,12 @@ public class WaiterMenuHandler implements MenuHandler {
                     }
             }
         }
-        
+
         // 4. Kinnita tellimus - näita enne kinnitamist
         System.out.println("\n    KINNITA TELLIMUS   ");
         viewOrder(order);
         System.out.print("Kas oled kindel? (J/E): ");
-        
+
         if (scanner.nextLine().toUpperCase().equals("J")) {
             waiter.takeOrder(table, orderService);
             orderService.updateStatus(order, Order.OrderStatus.IN_PROGRESS);
@@ -142,10 +148,10 @@ public class WaiterMenuHandler implements MenuHandler {
             System.out.println("Tellimus tühistatud.");
             orderService.getAllOrders().remove(order);
         }
-        
+
         waitForEnter(scanner);
     }
-    
+
     private void viewOrder(Order order) {
         System.out.println("\n--- TELLIMUS NR " + order.getOrderNumber() + " ---");
         if (order.getItems().isEmpty()) {
@@ -163,7 +169,7 @@ public class WaiterMenuHandler implements MenuHandler {
         }
         System.out.println();
     }
-    
+
     private void removeItem(Order order, Scanner scanner) {
         if (order.getItems().isEmpty()) {
             System.out.println("Tellimus tühi!");
@@ -179,7 +185,7 @@ public class WaiterMenuHandler implements MenuHandler {
             System.out.println("Vale number!");
         }
     }
-    
+
     private void handleUnbroneeri(Scanner scanner) {
         System.out.println("\n    BRONEERINGU TÜHISTAMINE   ");
         boolean found = false;
@@ -201,7 +207,7 @@ public class WaiterMenuHandler implements MenuHandler {
             waitForEnter(scanner);
             return;
         }
-        
+
         System.out.print("\nVali laud (0 tagasi): ");
         int num = InputUtils.readInt(scanner);
         if (num == 0) return;
@@ -210,12 +216,12 @@ public class WaiterMenuHandler implements MenuHandler {
         }
         waitForEnter(scanner);
     }
-    
+
     private void waitForEnter(Scanner scanner) {
         System.out.println("\nVajuta Enter...");
         scanner.nextLine();
     }
-    
+
     @Override
     public String getRoleName() {
         return "WAITER";
@@ -224,6 +230,10 @@ public class WaiterMenuHandler implements MenuHandler {
     // Kuvab hõivatud lauad ja võimaldab valida teenindatava laua
     private void handleTableService(Scanner scanner) {
         System.out.println("   LAUDADE TEENINDAMINE   \n");
+        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
+        System.out.print("Vajuta Enter alustamiseks: ");
+        String startInput = scanner.nextLine();
+        if (startInput.trim().equals("0")) return;
 
         boolean hasOccupied = false;
         for (Table table : tables) {
@@ -367,7 +377,7 @@ public class WaiterMenuHandler implements MenuHandler {
             default:
                 System.out.println("Vale valik!\n");
         }
-        
+
         waitForEnter(scanner);
     }
 }
