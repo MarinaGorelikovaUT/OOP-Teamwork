@@ -49,6 +49,10 @@ public class GuestMenuHandler implements MenuHandler {
 
     private void handleGuestReservation(Scanner scanner) {
         System.out.println("  LAUDA BRONEERIMINE  \n");
+        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
+        System.out.print("Vajuta Enter alustamiseks: ");
+        String startInput = scanner.nextLine();
+        if (startInput.trim().equals("0")) return;
 
         // 1. Nimi
         System.out.print("Sisesta oma nimi: ");
@@ -169,12 +173,26 @@ public class GuestMenuHandler implements MenuHandler {
             }
             table = availableTables.get(num - 1);
         }*/
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         // 6. Automatically pick the first available table
         Table table = availableTables.get(0);
 
+        // 7. Kinnitus enne broneerimist
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        System.out.println("\n--- Kontrollige sisestatud andmeid ---");
+        System.out.println("  Nimi:     " + name);
+        System.out.println("  Külalisi: " + count);
+        System.out.println("  Laud:     " + table.getNumber() + " (" + table.getCapibility() + " kohta)");
+        System.out.println("  Aeg:      " + broneeringAeg.format(formatter));
+        System.out.println("--------------------------------------");
+        System.out.print("Kas andmed on õiged? (1 - jah, 0 - alusta uuesti): ");
+        int confirm = InputUtils.readInt(scanner);
+        if (confirm != 1) {
+            System.out.println("Broneering tühistatud. Alusta uuesti.\n");
+            handleGuestReservation(scanner);
+            return;
+        }
 
-        // 7. Broneeri
+        // 8. Broneeri
         boolean ok = reservationService.addReservation(table, name, count, broneeringAeg);
         if (ok) {
             System.out.println("\nBroneering tehtud!");
@@ -182,8 +200,7 @@ public class GuestMenuHandler implements MenuHandler {
             System.out.println("  Broneerija: " + name);
             System.out.println("  Külalisi: " + count);
             System.out.println("  Aeg: " + broneeringAeg.format(formatter));
-            System.out.println();
-        } else {
+            System.out.println();        } else {
             System.out.println("Broneering ebaõnnestus! See laud on juba broneeritud sellel ajal.\n");
         }
 
