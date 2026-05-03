@@ -184,3 +184,27 @@ NEW → IN_PROGRESS → READY → PAID
 - **Restorani lahtiolekuajad:** hetkel saab lauda broneerida ükskõik milliseks kellaajaks, ka öösel. Plaanime lisada valideerimise restorani lahtiolekuaegade põhjal.
 - **Tellimuste ajalugu:** manager näeb hetkel ainult aktiivseid tellimusi, suletud tellimused kaovad süsteemist. Plaanime lisada tellimuste ajaloo vaatamise võimaluse.
 - **Broneeringu otsing:** hetkel puudub võimalus otsida broneeringut külalise nime järgi. Plaanime lisada otsingufunktsionaalsuse järgmises etapis.
+
+## Etapi 2 kokkuvõte
+
+Teises etapis parandasime kõik esimeses etapis teadaolevad vead ning lisasime kõik planeeritud funktsionaalsused:
+
+### Denis — broneeringud ja tellimuste salvestamine
+
+- Muutis broneerimise loogikat `GuestMenuHandler`-is ja `ManagerMenuHandler`-is — nüüd küsib programm esmalt nime, laua tüüpi, külaliste arvu ja aega, ning alles seejärel näitab vabu laudu just sellel ajal
+- Lisas meetodi `getAvailableTablesForTime()` `ReservationService`-i
+- Külalise jaoks ei saa enam broneerida lauda väljaspool restorani lahtiolekuaegu (10:00–20:00)
+- Lisas tellimuste salvestamise taaskäivituste vahel — `MenuItem`, `OrderItem`, `Order` said `Serializable`-ks, `OrderService`-i lisati meetodid `saveOrders()` ja `loadOrders()`, tellimus salvestatakse iga muudatuse järel faili `orders.ser`
+
+### Marina — menüü, tellimuste ajalugu ja veaparandused
+
+- Parandas menüü tootenumbrite vea — kategooria vaates kuvatakse nüüd globaalsed numbrid, mis vastavad tellimisel sisestatavale numbrile
+- Lisas restorani lahtiolekuaegade valideerimise (10:00–20:00) ka manaažeri broneerimisse
+- Lisas suletud tellimuste ajaloo — manaažer näeb nüüd kõiki tasutud tellimusi koos toodete ja kogusummaga (punkt 7 menüüs)
+- Lisas `closedOrders` nimekirja `OrderService`-i ning uuendas `saveOrders()` ja `loadOrders()` meetodeid, et säilitada ajalugu taaskäivituste vahel
+- Parandas laua staatuse taastamise programmi käivitamisel — aktiivsete tellimustega lauad märgitakse automaatselt `HOIVATUD`-ks
+
+## Planeeritavad täiendused järgmistes etappides
+
+- **Graafiline kasutajaliides:** plaanime hakata arendama graafilist kasutajaliidest (GUI), et muuta programm mugavamaks ja visuaalselt atraktiivsemaks
+- **Süsteemi tugi ja hooldus:** plaanime parandada programmi stabiilsust, lisada vigade käsitlemist ja tagada süsteemi pikaajaline toimimine

@@ -31,8 +31,6 @@ public class CommandLineMenu {
     }
 
     public void run() {
-        System.out.println("Programm käivitatud!\n");
-        
         MenuHandler currentHandler = handlers.get(currentRole);
         
         while (running) {

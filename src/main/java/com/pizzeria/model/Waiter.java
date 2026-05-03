@@ -36,35 +36,21 @@ public class Waiter extends User {
             System.out.println("Broneerija: " + customerName);
             System.out.println("Külaliste arv: " + guestCount);
             System.out.println("Laud on BRONEERITUD");
-        } else {
-            System.out.println("Laud ei ole broneeritud");
         }
         
         
         if (table.getStatus() == Table.TableStatus.VABA) {
             table.setStatus(Table.TableStatus.HOIVATUD);
-            System.out.println("\nLaud " + table.getNumber() + " on nüüd hõivatud (ilma broneeringuta)");
-        } else if (table.getStatus() == Table.TableStatus.BRONEERITUD) {
-            table.setStatus(Table.TableStatus.HOIVATUD);
-            System.out.println("\nLaud " + table.getNumber() + " on nüüd hõivatud (broneeritud klient)");
-        } else {
-            System.out.println("\nLaud " + table.getNumber() + " on juba hõivatud");
         }
-        
       
         List<Order> allOrders = orderService.getAllOrders();
         for (Order order : allOrders) {
             if (order.getTableNumber() == table.getNumber()) {
                 if (order.getStatus() == Order.OrderStatus.NEW) {
-                    orderService.updateStatus(order, Order.OrderStatus.IN_PROGRESS);
-                    System.out.println("\nTellimuse staatus muudetud: NEW -> IN_PROGRESS");
-                }
+                    orderService.updateStatus(order, Order.OrderStatus.IN_PROGRESS);}
                 break;
             }
         }
-      
-        
-        System.out.println("------------------------\n");
     }
     
     public void unbroneeriLaud(Table table) {
