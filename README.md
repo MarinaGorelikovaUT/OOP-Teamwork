@@ -129,13 +129,18 @@ Pizzeria haldussüsteem on käsurealt kasutatav Java rakendus, mis simuleerib pi
 
 Programm käivitatakse `Main.java` klassi käivitamisega IntelliJ IDEA-s. Kohe avaneb rolli valiku menüü:
 ```
----PIZZERIA SÜSTEEM---
-Vali roll:
-1. Manager
-2. Ettekandja
-3. Kokk
-4. Külaline (broneerimiseks)
-9. Välju programmist
+════════════════════════════════
+        PIZZERIA SÜSTEEM        
+════════════════════════════════
+  Vali roll:
+════════════════════════════════
+  [1] Manager
+  [2] Ettekandja
+  [3] Kokk
+  [4] Külaline (broneerimiseks)
+  [0] Välju programmist
+════════════════════════════════
+  Sinu valik:
 ```
 
 Vali number ja sisene oma rolli. Iga roll näeb ainult oma tööks vajalikke valikuid. Rolli vahetamiseks logi välja (valik `0`) ja vali uus roll.
@@ -206,5 +211,17 @@ Teises etapis parandasime kõik esimeses etapis teadaolevad vead ning lisasime k
 
 ## Planeeritavad täiendused järgmistes etappides
 
-- **Graafiline kasutajaliides:** plaanime hakata arendama graafilist kasutajaliidest (GUI), et muuta programm mugavamaks ja visuaalselt atraktiivsemaks
 - **Süsteemi tugi ja hooldus:** plaanime parandada programmi stabiilsust, lisada vigade käsitlemist ja tagada süsteemi pikaajaline toimimine
+
+## Etapi 3 kokkuvõte
+
+Kolmandas etapis keskendusime koodi kvaliteedile ja kasutajaliidese parandamisele.
+
+**Kasutajaliides:**
+- Kõik menüüd ja tegevuste päised on kujundatud ühtses stiilis
+- Eemaldatud liigsed sammud
+
+**Koodi kvaliteet:**
+- Kõrvaldati koodi dubleerimine, korduvad meetodid viidi ühisesse liidesesse
+- Parandati loogiline viga menüü navigeerimisel
+- Koristati kasutamata impordid
