@@ -6,7 +6,7 @@ import java.io.Serializable;
  */
 public class OrderItem implements Serializable {
     private static final long serialVersionUID = 1L;
-    //гарантирует, что сохранённый файл соответствует этому классу
+    // Tagab, et salvestatud fail vastab sellele klassile
 
 
 

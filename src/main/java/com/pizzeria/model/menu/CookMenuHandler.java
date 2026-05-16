@@ -13,11 +13,15 @@ public class CookMenuHandler implements MenuHandler {
         this.cook = new Cook("Mari");
         this.orderService = orderService;
     }
-    
+
     @Override
     public void displayMenu() {
-        System.out.println("1. Vaata aktiivseid tellimusi");
-        System.out.println("2. Lõpeta tellimus (märgi valmis)");
+        System.out.println("\n════════════════════════════════");
+        System.out.println("          KOKA MENÜÜ            ");
+        System.out.println("════════════════════════════════");
+        System.out.println("  [1] Vaata aktiivseid tellimusi");
+        System.out.println("  [2] Lõpeta tellimus (märgi valmis)");
+        System.out.println("════════════════════════════════");
     }
 
     //
@@ -59,11 +63,7 @@ public class CookMenuHandler implements MenuHandler {
         cook.completeOrder(orderService, orderNum);
         waitForEnter(scanner);
     }
-    
-    private void waitForEnter(Scanner scanner) {
-        System.out.println("\nVajuta Enter jätkamiseks...");
-        scanner.nextLine();
-    }
+
     
     @Override
     public String getRoleName() {

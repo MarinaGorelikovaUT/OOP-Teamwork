@@ -6,7 +6,6 @@ import java.io.Serializable;
  */
 public class MenuItem implements Serializable {
     private static final long serialVersionUID = 1L;
-    // Версионный ID для сериализации - гарантирует, что сохранённый файл соответствует этому классу
     // Versioonitunnus serialiseerimiseks - tagab, et salvestatud fail vastab sellele klassile
     // Toote kategooria (pitsa, lisand, jook, magustoit)
     public enum Category {

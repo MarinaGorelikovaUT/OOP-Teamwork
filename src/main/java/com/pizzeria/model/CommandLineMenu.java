@@ -20,9 +20,9 @@ public class CommandLineMenu {
         this.scanner = new Scanner(System.in);
         this.currentRole = role;
         this.running = true;
-        
+
         MenuService menuService = new MenuService();
-        
+
         this.handlers = new HashMap<>();
         handlers.put(Role.MANAGER, new ManagerMenuHandler(tables, reservationService, menuService, orderService));
         handlers.put(Role.WAITER, new WaiterMenuHandler(tables, reservationService, menuService, orderService));
@@ -32,26 +32,21 @@ public class CommandLineMenu {
 
     public void run() {
         MenuHandler currentHandler = handlers.get(currentRole);
-        
+
         while (running) {
-            System.out.println("  PIZZERIA TELLIMUSSUSTEEM  \n");
-            System.out.println("Roll: " + currentHandler.getRoleName());
-            System.out.println("--------------------------------");
-            
             currentHandler.displayMenu();
-            System.out.println("0. Logi välja");
-            System.out.print("\nVali tegevus: ");
-            
-           int choice = InputUtils.readInt(scanner);
-                
-           if (choice == 0) {
-               running = false;
-               System.out.println("\nLogitakse välja...");
-           } else {
-               currentHandler.handleInput(choice, scanner);
-           }
+            System.out.println("  [0] Logi välja");
+            System.out.println("════════════════════════════════");
+            System.out.print("  Vali tegevus: ");
+
+            int choice = InputUtils.readInt(scanner);
+
+            if (choice == 0) {
+                running = false;
+                System.out.println("\nLogitakse välja...");
+            } else {
+                currentHandler.handleInput(choice, scanner);
+            }
         }
     }
-
-    //
 }

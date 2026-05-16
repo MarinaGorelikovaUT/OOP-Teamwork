@@ -25,10 +25,14 @@ public class WaiterMenuHandler implements MenuHandler {
 
     @Override
     public void displayMenu() {
-        System.out.println("1. Võta tellimus");
-        System.out.println("2. Tühista broneering");
-        System.out.println("3. Vaata menüüd");
-        System.out.println("4. Teeninda lauda");
+        System.out.println("\n════════════════════════════════");
+        System.out.println("       ETTEKANDJA MENÜÜ         ");
+        System.out.println("════════════════════════════════");
+        System.out.println("  [1] Võta tellimus");
+        System.out.println("  [2] Tühista broneering");
+        System.out.println("  [3] Vaata menüüd");
+        System.out.println("  [4] Teeninda lauda");
+        System.out.println("════════════════════════════════");
     }
 
     @Override
@@ -53,14 +57,12 @@ public class WaiterMenuHandler implements MenuHandler {
     }
 
     private void handleOrder(Scanner scanner) {
-        System.out.println("\n  TELLIMUSE VÕTMINE  \n");
-        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
-        System.out.print("Vajuta Enter alustamiseks: ");
-        String startInput = scanner.nextLine();
-        if (startInput.trim().equals("0")) return;
+        System.out.println("\n════════════════════════════════");
+        System.out.println("       TELLIMUSE VÕTMINE        ");
+        System.out.println("════════════════════════════════\n");
 
         // 1. Vali laud
-        System.out.println("\n=== LAUAD ===");
+        System.out.println("=== LAUAD ===");
         for (Table t : tables) {
             String info = "Laud " + t.getNumber() + " | Mahutavus: " + t.getCapibility() + " | Staatus: " + t.getStatus();            if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
                 for (Reservation r : reservationService.getAllReservations()) {
@@ -187,7 +189,9 @@ public class WaiterMenuHandler implements MenuHandler {
     }
 
     private void handleUnbroneeri(Scanner scanner) {
-        System.out.println("\n    BRONEERINGU TÜHISTAMINE   ");
+        System.out.println("\n════════════════════════════════");
+        System.out.println("    BRONEERINGU TÜHISTAMINE     ");
+        System.out.println("════════════════════════════════\n");
         boolean found = false;
         for (Table t : tables) {
             if (t.getStatus() == Table.TableStatus.BRONEERITUD) {
@@ -217,11 +221,6 @@ public class WaiterMenuHandler implements MenuHandler {
         waitForEnter(scanner);
     }
 
-    private void waitForEnter(Scanner scanner) {
-        System.out.println("\nVajuta Enter...");
-        scanner.nextLine();
-    }
-
     @Override
     public String getRoleName() {
         return "WAITER";
@@ -229,11 +228,9 @@ public class WaiterMenuHandler implements MenuHandler {
 
     // Kuvab hõivatud lauad ja võimaldab valida teenindatava laua
     private void handleTableService(Scanner scanner) {
-        System.out.println("   LAUDADE TEENINDAMINE   \n");
-        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
-        System.out.print("Vajuta Enter alustamiseks: ");
-        String startInput = scanner.nextLine();
-        if (startInput.trim().equals("0")) return;
+        System.out.println("\n════════════════════════════════");
+        System.out.println("     LAUDADE TEENINDAMINE       ");
+        System.out.println("════════════════════════════════\n");
 
         boolean hasOccupied = false;
         for (Table table : tables) {
@@ -302,7 +299,8 @@ public class WaiterMenuHandler implements MenuHandler {
                     break;
                 }
                 System.out.println("Arve:");
-                System.out.println("Kogusumma: " + String.format("%.2f", total) + " €");                System.out.print("\nKlient maksis? (J/E): ");
+                System.out.println("Kogusumma: " + String.format("%.2f", total) + " €");
+                System.out.print("\nKlient maksis? (J/E): ");
                 String confirm = scanner.nextLine();
                 if (confirm.equalsIgnoreCase("J")) {
                     orderService.closeOrder(tableOrder);
