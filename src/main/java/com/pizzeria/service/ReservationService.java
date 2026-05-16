@@ -13,9 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.pizzeria.model.Table.TableStatus.BRONEERITUD;
-import static com.pizzeria.model.Table.TableStatus.VABA;
-
 public class ReservationService {
 
     private List<Reservation> reservations;
@@ -78,7 +75,7 @@ public class ReservationService {
     }
 
     public void updateTableStatuses(Table[] tables) {
-        // Remove reservations that ended more than 2 hours ago
+        // Eemaldab broneeringud, mis lõppesid rohkem kui 2 tundi tagasi
         reservations.removeIf(r -> LocalDateTime.now().isAfter(r.getTime().plusHours(2)));
         saveReservations();
         for (Reservation r : reservations) {

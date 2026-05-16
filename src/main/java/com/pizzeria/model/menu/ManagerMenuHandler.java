@@ -30,13 +30,17 @@ public class ManagerMenuHandler implements MenuHandler {
 
     @Override
     public void displayMenu() {
-        System.out.println("1. Vaata laudade nimikirja");
-        System.out.println("2. Broneeri laud");
-        System.out.println("3. Vaata kõiki broneeritud laudu");
-        System.out.println("4. Vaata menüüd");
-        System.out.println("5. Tühista broneering");
-        System.out.println("6. Vaata kõiki tellimusi");
-        System.out.println("7. Vaata tellimuste ajalugu");
+        System.out.println("\n════════════════════════════════");
+        System.out.println("         MANAGER MENÜÜ          ");
+        System.out.println("════════════════════════════════");
+        System.out.println("  [1] Vaata laudade nimikirja");
+        System.out.println("  [2] Broneeri laud");
+        System.out.println("  [3] Vaata kõiki broneeritud laudu");
+        System.out.println("  [4] Vaata menüüd");
+        System.out.println("  [5] Tühista broneering");
+        System.out.println("  [6] Vaata kõiki tellimusi");
+        System.out.println("  [7] Vaata tellimuste ajalugu");
+        System.out.println("════════════════════════════════");
     }
 
     @Override
@@ -69,6 +73,23 @@ public class ManagerMenuHandler implements MenuHandler {
         }
     }
 
+    // Kuvab ühe tellimuse info: number, laud, staatus, aeg, tooted ja kogusumma
+    private void printOrder(Order order) {
+        System.out.println("----------------------------------------");
+        System.out.println("Tellimus nr: " + order.getOrderNumber());
+        System.out.println("Laud: " + order.getTableNumber());
+        System.out.println("Staatus: " + order.getStatus());
+        System.out.println("Aeg: " + order.getFormattedTime());
+        System.out.println("Tooted:");
+        for (OrderItem item : order.getItems()) {
+            System.out.println("  - " + item.getMenuItem().getName() +
+                    " x" + item.getQuantity() +
+                    " = " + String.format("%.2f", item.getTotalPrice()) + " €");
+        }
+        System.out.printf("Kogusumma: %.2f €%n", order.getTotalPrice());
+        System.out.println("----------------------------------------\n");
+    }
+
     // Kuvab kõik aktiivsed tellimused koos toodete ja kogusummaga
     private void viewAllOrders(Scanner scanner) {
         System.out.println("\n  KÕIK TELLIMUSED  \n");
@@ -78,20 +99,9 @@ public class ManagerMenuHandler implements MenuHandler {
             return;
         }
         for (Order order : orderService.getAllOrders()) {
-            System.out.println("----------------------------------------");
-            System.out.println("Tellimus nr: " + order.getOrderNumber());
-            System.out.println("Laud: " + order.getTableNumber());
-            System.out.println("Staatus: " + order.getStatus());
-            System.out.println("Aeg: " + order.getFormattedTime());
-            System.out.println("Tooted:");
-            for (OrderItem item : order.getItems()) {
-                System.out.println("  - " + item.getMenuItem().getName() +
-                        " x" + item.getQuantity() +
-                        " = " + String.format("%.2f", item.getTotalPrice()) + " €");
-            }
-            System.out.printf("Kogusumma: %.2f €%n", order.getTotalPrice());
-            System.out.println("----------------------------------------\n");
+            printOrder(order);
         }
+
         waitForEnter(scanner);
     }
 
@@ -104,29 +114,16 @@ public class ManagerMenuHandler implements MenuHandler {
             return;
         }
         for (Order order : orderService.getClosedOrders()) {
-            System.out.println("----------------------------------------");
-            System.out.println("Tellimus nr: " + order.getOrderNumber());
-            System.out.println("Laud: " + order.getTableNumber());
-            System.out.println("Staatus: " + order.getStatus());
-            System.out.println("Aeg: " + order.getFormattedTime());
-            System.out.println("Tooted:");
-            for (OrderItem item : order.getItems()) {
-                System.out.println("  - " + item.getMenuItem().getName() +
-                        " x" + item.getQuantity() +
-                        " = " + String.format("%.2f", item.getTotalPrice()) + " €");
-            }
-            System.out.printf("Kogusumma: %.2f €%n", order.getTotalPrice());
-            System.out.println("----------------------------------------\n");
+            printOrder(order);
         }
+
         waitForEnter(scanner);
     }
 
     private void handleReservation(Scanner scanner) {
-        System.out.println("  LAUDA BRONEERIMINE  \n");
-        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
-        System.out.print("Vajuta Enter alustamiseks: ");
-        String startInput = scanner.nextLine();
-        if (startInput.trim().equals("0")) return;
+        System.out.println("\n════════════════════════════════");
+        System.out.println("       LAUDA BRONEERIMINE       ");
+        System.out.println("════════════════════════════════\n");
 
         // 1. Nimi
         System.out.print("Nimi: ");
@@ -243,7 +240,7 @@ public class ManagerMenuHandler implements MenuHandler {
         if (nextRes != null) {
             long minutesUntilNext = java.time.Duration.between(broneeringLopp, nextRes.getTime()).toMinutes();
             if (minutesUntilNext < 60) {
-                System.out.println("\n⚠️  HOIATUS: Järgmine broneering sellel laual algab " +
+                System.out.println("\nHOIATUS: Järgmine broneering sellel laual algab " +
                         nextRes.getTime().format(formatter) +
                         " — see on vähem kui tund pärast selle broneeringu lõppu!");
                 System.out.println("   Kas soovid siiski broneerida? (1 - jah, 0 - ei)");
@@ -391,14 +388,8 @@ public class ManagerMenuHandler implements MenuHandler {
         return next;
     }
 
-    private void waitForEnter(Scanner scanner) {
-        System.out.println("\nVajuta Enter jätkamiseks...");
-        scanner.nextLine();
-    }
-
     @Override
     public String getRoleName() {
         return "MANAGER";
     }
-    //
 }

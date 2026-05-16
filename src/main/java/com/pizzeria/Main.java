@@ -12,13 +12,12 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-
         TableService tableService = new TableService();
         Table[] tables = tableService.getAllTables().toArray(new Table[0]);
         ReservationService reservationService = new ReservationService();
         reservationService.loadReservations();
         OrderService orderService = new OrderService();
-        orderService.loadOrders(); // load saved orders from previous session/ save orders
+        orderService.loadOrders(); // Laadib salvestatud tellimused eelmisest sessioonist
 
         // Taasta laua staatus aktiivsete tellimuste põhjal
         for (Order order : orderService.getAllOrders()) {
@@ -31,18 +30,22 @@ public class Main {
         }
 
         while (true) {
-            System.out.println("  ---PIZZERIA SÜSTEEM---   \n");
-            System.out.println("Vali roll:");
-            System.out.println("1. Manager");
-            System.out.println("2. Ettekandja");
-            System.out.println("3. Kokk");
-            System.out.println("4. Külaline (broneerimiseks)");
-            System.out.println("9. Välju programmist");
-            System.out.print("Sinu valik: ");
+            System.out.println("\n════════════════════════════════");
+            System.out.println("        PIZZERIA SÜSTEEM        ");
+            System.out.println("════════════════════════════════");
+            System.out.println("  Vali roll:");
+            System.out.println("════════════════════════════════");
+            System.out.println("  [1] Manager");
+            System.out.println("  [2] Ettekandja");
+            System.out.println("  [3] Kokk");
+            System.out.println("  [4] Külaline (broneerimiseks)");
+            System.out.println("  [0] Välju programmist");
+            System.out.println("════════════════════════════════");
+            System.out.print("  Sinu valik: ");
 
             int choice = InputUtils.readInt(scanner);
 
-            if (choice == 9) {
+            if (choice == 0) {
                 System.out.println("Programm sulgub...");
                 break;
             }

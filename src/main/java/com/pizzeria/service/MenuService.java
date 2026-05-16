@@ -104,7 +104,7 @@ public class MenuService {
         return menu.get(index);
     }
 
-    // // Kuvab menüü kategooriate kaupa, võimaldab kasutajal valida kategooria või kogu menüü
+    // Kuvab menüü kategooriate kaupa, võimaldab kasutajal valida kategooria või kogu menüü
     public void printMenuWithCategoryChoice(Scanner scanner) {
         boolean browsing = true;
         while (browsing) {
@@ -145,7 +145,7 @@ public class MenuService {
                     continue;
                 default:
                     System.out.println("Vale valik!\n");
-                    return;
+                    continue;
             }
 
             for (MenuItem menuItem : items) {

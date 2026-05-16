@@ -24,8 +24,12 @@ public class GuestMenuHandler implements MenuHandler {
 
     @Override
     public void displayMenu() {
-        System.out.println("1. Broneeri laud");
-        System.out.println("2. Vaata menüüd");
+        System.out.println("\n════════════════════════════════");
+        System.out.println("        KÜLALISE MENÜÜ          ");
+        System.out.println("════════════════════════════════");
+        System.out.println("  [1] Broneeri laud");
+        System.out.println("  [2] Vaata menüüd");
+        System.out.println("════════════════════════════════");
     }
 
     @Override
@@ -48,11 +52,9 @@ public class GuestMenuHandler implements MenuHandler {
     }
 
     private void handleGuestReservation(Scanner scanner) {
-        System.out.println("  LAUDA BRONEERIMINE  \n");
-        System.out.println("(Tagasi minekuks vajuta 0 + Enter)");
-        System.out.print("Vajuta Enter alustamiseks: ");
-        String startInput = scanner.nextLine();
-        if (startInput.trim().equals("0")) return;
+        System.out.println("\n════════════════════════════════");
+        System.out.println("       LAUDA BRONEERIMINE       ");
+        System.out.println("════════════════════════════════\n");
 
         // 1. Nimi
         System.out.print("Sisesta oma nimi: ");
@@ -154,26 +156,6 @@ public class GuestMenuHandler implements MenuHandler {
             return;
         }
 
-        /*System.out.println("\nVabad lauad sellel ajal:");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-        for (int i = 0; i < availableTables.size(); i++) {
-            Table t = availableTables.get(i);
-            System.out.println((i + 1) + ". Laud " + t.getNumber() + " | Mahutavus: " + t.getCapibility());
-        }*/
-
-        // 6. Laua valimine
-        /*Table table = null;
-        while (table == null) {
-            System.out.print("\nVali laud (1-" + availableTables.size() + "), 0 tagasi: ");
-            int num = InputUtils.readInt(scanner);
-            if (num == 0) return;
-            if (num < 1 || num > availableTables.size()) {
-                System.out.println("Vale number! Proovi uuesti.\n");
-                continue;
-            }
-            table = availableTables.get(num - 1);
-        }*/
-        // 6. Automatically pick the first available table
         Table table = availableTables.get(0);
 
         // 7. Kinnitus enne broneerimist
@@ -205,12 +187,6 @@ public class GuestMenuHandler implements MenuHandler {
         }
 
         waitForEnter(scanner);
-    }
-
-    //
-    private void waitForEnter(Scanner scanner) {
-        System.out.println("\nVajuta Enter jätkamiseks...");
-        scanner.nextLine();
     }
 
     @Override
